@@ -1,0 +1,55 @@
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+/*#map { position:absolute; top:0; bottom:0; width:100%; }*/
+#map {
+  height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.demo-layout-transparent {
+  background: ghostwhite;
+  color: black;
+}
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button,
+.mdl-layout__header-row .mdl-navigation__link {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: black;
+}
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+#marker {
+    background-image: url('https://www.mapbox.com/mapbox-gl-js/assets/washington-monument.jpg');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mapbox-marker {
+    mix-blend-mode: screen;
+}
+
+.animate {
+    transition-property: transform;
+    -webkit-animation: pulsate 30s ease-out;
+    -webkit-animation-iteration-count: 1; 
+    opacity: 0.0
+}
+
+@-webkit-keyframes pulsate {
+  0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+  50% {opacity: 1.0;}
+  100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
