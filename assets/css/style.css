@@ -3,6 +3,10 @@
 /*#map { position:absolute; top:0; bottom:0; width:100%; }*/
 #map {
   height: 100%;
+  position:absolute; 
+  top:0; 
+  bottom:0; 
+  width:100%;
 }
 /* Optional: Makes the sample page fill the window. */
 html, body {
@@ -10,9 +14,6 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
-body { margin:0; padding:0; }
-#map { position:absolute; top:0; bottom:0; width:100%; }
 
 .demo-layout-transparent {
   background: ghostwhite;
@@ -32,12 +33,26 @@ body { margin:0; padding:0; }
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 100px;
-    height: 100px;
+}
+
+.mapboxgl-popup-content {
+  width: 200px;
+  height: 200px;
 }
 
 .mapboxgl-popup {
     max-width: 400px;
+    width: 200px;
+    height: 200px;
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.mdl-layout__drawer {
+  width: 100vw;
+  left: -100vw;
+}
+
+.mdl-layout__drawer.is-visible {
+  left: 0;
 }
 

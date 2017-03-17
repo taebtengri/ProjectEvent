@@ -35,28 +35,29 @@ $(document).ready(function () {
 
         currentPosition = [pos.lng, pos.lat];
         map.setCenter(currentPosition);
+
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-        }
-
-    function displayPosition(position) {
-        alert("Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
-        currentPosition = [position.coords.latitiude, position.coords.longitutde];
-        console.log(currentPosition);
+    } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
     }
 
-    function displayError(error) {
-        var errors = { 
-            1: 'Permission denied',
-            2: 'Position unavailable',
-            3: 'Request timeout'
-        };
-        alert("Error: " + errors[error.code]);
-    }
+    // function displayPosition(position) {
+    //     alert("Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
+    //     currentPosition = [position.coords.latitiude, position.coords.longitutde];
+    //     console.log(currentPosition);
+    // }
+
+    // function displayError(error) {
+    //     var errors = { 
+    //         1: 'Permission denied',
+    //         2: 'Position unavailable',
+    //         3: 'Request timeout'
+    //     };
+    //     alert("Error: " + errors[error.code]);
+    // }
 
     function getLocalData(category) {
         var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
@@ -85,19 +86,19 @@ $(document).ready(function () {
            console.log("Event:");
            console.log(event);
 
-           $.ajax({
-                url: "https://api.foursquare.com/v2/venues/" +  eventId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
-                method: "GET"
-            }).done(function (response) {
-                // Log the queryURL
-                // console.log(queryUR);
-                // Log the resulting object
-                // console.log("API RESPONSE:");
-                if (response.response.photos.items[0] != undefined) {
-                    eventPhoto = response.response.photos.items[0].prefix + response.response.photos.items[0].suffix;
-                    console.log(eventPhoto);
-                }
-            }); 
+        //    $.ajax({
+        //         url: "https://api.foursquare.com/v2/venues/" +  eventId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
+        //         method: "GET"
+        //     }).done(function (response) {
+        //         // Log the queryURL
+        //         // console.log(queryUR);
+        //         // Log the resulting object
+        //         // console.log("API RESPONSE:");
+        //         if (response.response.photos.items[0] != undefined) {
+        //             eventPhoto = response.response.photos.items[0].prefix + response.response.photos.items[0].suffix;
+        //             console.log(eventPhoto);
+        //         }
+        //     }); 
 
            var newFeature = {
                 "type": "Feature",
@@ -136,6 +137,7 @@ $(document).ready(function () {
         className: 'mapbox-marker animate'
     });
 
+    map.doubleClickZoom.disable();
     map.scrollZoom.disable();
     map.scrollZoom.enable({ around: 'center' });
     map.dragPan.disable();
@@ -178,12 +180,17 @@ $(document).ready(function () {
             el.style.height = marker.properties.iconSize[1] + 'px';
 
             el.addEventListener('click', function() {
-                window.alert(marker.properties.name);
+                // window.alert(marker.properties.name);
             });
+
+            // create the popup
+            var popup = new mapboxgl.Popup({offset: 25})
+                .setText(marker.properties.name);
 
             // add marker to map
             new mapboxgl.Marker(el, {offset: [-marker.properties.iconSize[0] / 2, -marker.properties.iconSize[1] / 2]})
                 .setLngLat(marker.geometry.coordinates)
+                .setPopup(popup)
                 .addTo(map);
         });
     });
@@ -214,34 +221,16 @@ $(document).ready(function () {
     // });
 
     // Create a popup, but don't add it to the map yet.
-    var popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-    });
+    // var popup = new mapboxgl.Popup({
+    //     closeButton: false,
+    //     closeOnClick: false
+    // });
 
     // Use the same approach as above to indicate that the symbols are clickable
     // by changing the cursor style to 'pointer'.
-   map.on('mousemove', function(e) {
-        // var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
-        // Change the cursor style as a UI indicator.
-        // map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-
-        // if (!features.length) {
-        //     popup.remove();
-        //     return;
-        // }
-
-        // var feature = features[0];
-
-        // Populate the popup and set its coordinates
-        // based on the feature found.
-        // popup.setLngLat(feature.geometry.coordinates)
-        //     .setHTML(feature.properties.description)
-        //     .addTo(map);
-    });
 
     $(".category").on("click", function(event) {
-        event.preventDefault();
+        // event.preventDefault();
         var category = $(this).attr("data-attribute");
         console.log(category);
         getLocalData(category);
