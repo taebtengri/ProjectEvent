@@ -1,29 +1,52 @@
 $(document).ready(function () {
 
-    var fourSquareAPI = "https://api.foursquare.com/v2/venues/search?v=20161016&ll=33.74%2C%20-84.398&query=music&intent=checkin&client_id=SUS4V4KN3LDW2BEU5G4TJIRA2R3VK5GG4TA3A15VOOSYEMAE&client_secret=5NOZCH3QOPXR3VNYHJJH4SOMJRHVIIQV5BHWOLXX3WDHAY4J";
+    var APIKeyFoursquare = "client_id=SUS4V4KN3LDW2BEU5G4TJIRA2R3VK5GG4TA3A15VOOSYEMAE&client_secret=5NOZCH3QOPXR3VNYHJJH4SOMJRHVIIQV5BHWOLXX3WDHAY4J";
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2JyYW5ub24iLCJhIjoiY2owYTl2cDh4MGdqeDJxcGZhYjR3NzY1MyJ9.6nT2tLHDeMTpYnwMV7iV9w';
 
-    // var bounds = [
-    //     [-74.04728500751165, 40.68392799015035], // Southwest coordinates
-    //     [-73.91058699000139, 40.87764500765852]  // Northeast coordinates
-    // ];
-
     var currentPosition = [-84.39, 33.74];
+    var localEvents = [];
 
-    if (navigator.geolocation) {
-    // do fancy stuff
-        var timeoutVal = 10 * 1000 * 1000;
-        navigator.geolocation.getCurrentPosition(
-            displayPosition, 
-            displayError,
-            { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
-        );
-        console.log("true");
+    function getDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd<10) {
+            dd='0'+dd
+        } 
+
+        if (mm<10) {
+            mm='0'+mm
+        }
+
+        return yyyy + "" + mm + "" + dd;
     }
+    
+    console.log(getDate());
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+            };  
+
+        currentPosition = [pos.lng, pos.lat];
+        map.setCenter(currentPosition);
+        }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+        });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
 
     function displayPosition(position) {
         alert("Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
         currentPosition = [position.coords.latitiude, position.coords.longitutde];
+        console.log(currentPosition);
     }
 
     function displayError(error) {
@@ -35,15 +58,62 @@ $(document).ready(function () {
         alert("Error: " + errors[error.code]);
     }
 
+    function getLocalData() {
+        var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=music&intent=checkin&radius=5000&limit=10&" + APIKeyFoursquare;
+        console.log(queryUR);
+
+        $.ajax({
+            url: queryUR,
+            method: "GET"
+        }).done(function (response) {
+            // Log the queryURL
+            console.log(queryUR);
+            // Log the resulting object
+            console.log("API RESPONSE:");
+            console.log(response);
+            // var pos = [];
+            getEvent(response.response.venues);
+            
+        }); 
+    }
+
+    function getEvent(events) {
+        for (var i = 0; i < events.length; i++) {
+           var event = events[i];
+           var coordinates = [events[i].location.lng, events[i].location.lat];
+
+           var newFeature = {
+                "type": "Feature",
+                "properties": {
+                    "message": "Foo",
+                    "phone": events[i].contact.formattedPhone,
+                    "name": events[i].name,
+                    "description": events[i],
+                    "website": events[i].url,
+                    "address": events[i].location.address,
+                    "icon": "theatre",
+                    "iconSize": [40, 40]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": coordinates
+                }
+           };
+           localEvents.push(newFeature);
+           console.log(localEvents);
+       }
+    }
+
+    getLocalData();
+
     var map = new mapboxgl.Map({
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/light-v9', //stylesheet location
-        center: currentPosition, // starting position
         zoom: 17, // starting zoom
         // maxBounds: bounds, // Sets bounds as max
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
-        minZoom: 15,
+        // minZoom: 15,
         maxZoom: 17,
         className: 'mapbox-marker animate'
     });
@@ -54,40 +124,49 @@ $(document).ready(function () {
 
     map.on('load', function () {
         // Add a layer showing the places.
-        map.addLayer({
-            "id": "places",
-            "type": "symbol",
-            "source": {
-                "type": "geojson",
-                "data": {
-                    "type": "FeatureCollection",
-                    "features": [{
-                        "type": "Feature",
-                        "properties": {
-                            "description": "<strong>Make it Mount Pleasant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
-                            "icon": "theatre"
-                        },
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": currentPosition
-                        }
-                    }, {
-                        "type": "Feature",
-                        "properties": {
-                            "description": "<strong>Mad Men Season Five Finale Watch Party</strong><p>Head to Lounge 201 (201 Massachusetts Avenue NE) Sunday for a <a href=\"http://madmens5finale.eventbrite.com/\" target=\"_blank\" title=\"Opens in a new window\">Mad Men Season Five Finale Watch Party</a>, complete with 60s costume contest, Mad Men trivia, and retro food and drink. 8:00-11:00 p.m. $10 general admission, $20 admission and two hour open bar.</p>",
-                            "icon": "theatre"
-                        },
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": currentPosition
-                        }
-                    }]
-                }
-            },
-            "layout": {
-                "icon-image": "{icon}-15",
-                "icon-allow-overlap": true
+        console.log("Current position to set center:" + currentPosition);
+
+        var currentEvents = localEvents;
+        var eventsObject = {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": []
             }
+        }
+
+        for (var i = 0; i < currentEvents.length; i++) {
+            eventsObject.data.features.push(currentEvents[i]);
+            var el = document.createElement('div');
+            el.className = 'marker';
+            // el.style.backgroundImage = 'url(https://images.unsplash.com/photo-1473220464492-452fb02e6221?dpr=1&auto=compress,format&fit=crop&w=1199&h=800&q=80&cs=tinysrgb&crop=)';
+                    
+            new mapboxgl.Marker(el)
+                .setLngLat(currentPosition)
+                .addTo(map);
+
+                console.log(el);
+        }
+
+        console.log(eventsObject);
+
+        // add markers to map
+        eventsObject.data.features.forEach(function(marker) {
+            // create a DOM element for the marker
+            var el = document.createElement('div');
+            el.className = 'marker';
+            el.style.backgroundImage = 'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
+            el.style.width = marker.properties.iconSize[0] + 'px';
+            el.style.height = marker.properties.iconSize[1] + 'px';
+
+            el.addEventListener('click', function() {
+                window.alert(marker.properties.name);
+            });
+
+            // add marker to map
+            new mapboxgl.Marker(el, {offset: [-marker.properties.iconSize[0] / 2, -marker.properties.iconSize[1] / 2]})
+                .setLngLat(marker.geometry.coordinates)
+                .addTo(map);
         });
     });
 
@@ -95,15 +174,6 @@ $(document).ready(function () {
     // When a click event occurs near a place, open a popup at the location of
     // the feature, with description HTML from its properties.
     map.on('click', function (e) {
-        // $.ajax({
-        //     url: fourSquareAPI,
-        //     method: "GET"
-        // }).done(function(response) {
-        //     console.log(JSON.stringify(response));
-        // }).fail(function(response) {
-        //     console.log(JSON.stringify(response));
-        // });
-
         var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
 
         if (!features.length) {
@@ -134,22 +204,22 @@ $(document).ready(function () {
     // Use the same approach as above to indicate that the symbols are clickable
     // by changing the cursor style to 'pointer'.
    map.on('mousemove', function(e) {
-        var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
+        // var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
         // Change the cursor style as a UI indicator.
-        map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+        // map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
-        if (!features.length) {
-            popup.remove();
-            return;
-        }
+        // if (!features.length) {
+        //     popup.remove();
+        //     return;
+        // }
 
-        var feature = features[0];
+        // var feature = features[0];
 
         // Populate the popup and set its coordinates
         // based on the feature found.
-        popup.setLngLat(feature.geometry.coordinates)
-            .setHTML(feature.properties.description)
-            .addTo(map);
+        // popup.setLngLat(feature.geometry.coordinates)
+        //     .setHTML(feature.properties.description)
+        //     .addTo(map);
     });
 });
 
