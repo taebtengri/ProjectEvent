@@ -58,8 +58,8 @@ $(document).ready(function () {
         alert("Error: " + errors[error.code]);
     }
 
-    function getLocalData() {
-        var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=music&intent=checkin&radius=5000&limit=10&" + APIKeyFoursquare;
+    function getLocalData(category) {
+        var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
         console.log(queryUR);
 
         $.ajax({
@@ -67,13 +67,12 @@ $(document).ready(function () {
             method: "GET"
         }).done(function (response) {
             // Log the queryURL
-            console.log(queryUR);
+            // console.log(queryUR);
             // Log the resulting object
-            console.log("API RESPONSE:");
-            console.log(response);
+            // console.log("API RESPONSE:");
+            // console.log(response);
             // var pos = [];
             getEvent(response.response.venues);
-            
         }); 
     }
 
@@ -81,16 +80,35 @@ $(document).ready(function () {
         for (var i = 0; i < events.length; i++) {
            var event = events[i];
            var coordinates = [events[i].location.lng, events[i].location.lat];
+           var eventId = events[i].id;
+           var eventPhoto = "";
+           console.log("Event:");
+           console.log(event);
+
+           $.ajax({
+                url: "https://api.foursquare.com/v2/venues/" +  eventId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
+                method: "GET"
+            }).done(function (response) {
+                // Log the queryURL
+                // console.log(queryUR);
+                // Log the resulting object
+                // console.log("API RESPONSE:");
+                if (response.response.photos.items[0] != undefined) {
+                    eventPhoto = response.response.photos.items[0].prefix + response.response.photos.items[0].suffix;
+                    console.log(eventPhoto);
+                }
+            }); 
 
            var newFeature = {
                 "type": "Feature",
                 "properties": {
-                    "message": "Foo",
+                    "message": events[i].name,
                     "phone": events[i].contact.formattedPhone,
                     "name": events[i].name,
                     "description": events[i],
                     "website": events[i].url,
                     "address": events[i].location.address,
+                    "photo": eventPhoto,
                     "icon": "theatre",
                     "iconSize": [40, 40]
                 },
@@ -100,11 +118,11 @@ $(document).ready(function () {
                 }
            };
            localEvents.push(newFeature);
-           console.log(localEvents);
+        //    console.log(localEvents);
        }
     }
 
-    getLocalData();
+    getLocalData("food");
 
     var map = new mapboxgl.Map({
         container: 'map', // container id
@@ -113,8 +131,8 @@ $(document).ready(function () {
         // maxBounds: bounds, // Sets bounds as max
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
-        // minZoom: 15,
-        maxZoom: 17,
+        minZoom: 15,
+        maxZoom: 20,
         className: 'mapbox-marker animate'
     });
 
@@ -173,27 +191,27 @@ $(document).ready(function () {
 
     // When a click event occurs near a place, open a popup at the location of
     // the feature, with description HTML from its properties.
-    map.on('click', function (e) {
-        var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
+    // map.on('click', function (e) {
+    //     var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
 
-        if (!features.length) {
-            return;
-        }
+    //     if (!features.length) {
+    //         return;
+    //     }
 
-        var feature = features[0];
+    //     var feature = features[0];
 
-        if (features.length) {
-            // Get coordinates from the symbol and center the map on those coordinates
-            map.flyTo({center: features[0].geometry.coordinates});
-        }
+    //     if (features.length) {
+    //         // Get coordinates from the symbol and center the map on those coordinates
+    //         map.flyTo({center: features[0].geometry.coordinates});
+    //     }
 
-        // Populate the popup and set its coordinates
-        // based on the feature found.
-        var popup = new mapboxgl.Popup()
-            .setLngLat(feature.geometry.coordinates)
-            .setHTML(feature.properties.description)
-            .addTo(map);
-    });
+    //     // Populate the popup and set its coordinates
+    //     // based on the feature found.
+    //     var popup = new mapboxgl.Popup()
+    //         .setLngLat(feature.geometry.coordinates)
+    //         .setHTML(feature.properties.description)
+    //         .addTo(map);
+    // });
 
     // Create a popup, but don't add it to the map yet.
     var popup = new mapboxgl.Popup({
@@ -221,5 +239,12 @@ $(document).ready(function () {
         //     .setHTML(feature.properties.description)
         //     .addTo(map);
     });
+
+    $(".category").on("click", function(event) {
+        event.preventDefault();
+        var category = $(this).attr("data-attribute");
+        console.log(category);
+        getLocalData(category);
+    })
 });
 
