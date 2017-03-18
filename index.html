@@ -36,13 +36,16 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title">MapChat</span>
             <nav class="mdl-navigation">
-                <a class="mdl-navigation__link category" href="" data-attribute="music">Music</a>
-                <a class="mdl-navigation__link category" href="" data-attribute="Coffee">Coffee</a>
-                <a class="mdl-navigation__link category" href="" data-attribute="Nightlife">Nightlife</a>
-                <a class="mdl-navigation__link category" href="" data-attribute="Food">Food</a>
-                <a class="mdl-navigation__link category" href="" data-attribute="Breakfast">Brunch</a>
-                <a class="mdl-navigation__link category" href="" data-attribute="Fun">Fun</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="music">Music</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="Coffee">Coffee</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="Nightlife">Nightlife</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="Food">Food</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="Breakfast">Brunch</a>
+                <a class="mdl-navigation__link category drawer-category" href="" data-attribute="Fun">Fun</a>
             </nav>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" id="close-drawer">
+                <i class="material-icons">add</i>
+            </button>
         </div>
         <main class="mdl-layout__content">
             <div id='map'></div>

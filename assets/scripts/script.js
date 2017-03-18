@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     var currentPosition = [-84.39, 33.74];
     var localEvents = [];
+    var category = "music";
 
     function getDate() {
         var today = new Date();
@@ -86,6 +87,8 @@ $(document).ready(function () {
            console.log("Event:");
            console.log(event);
 
+
+        // Ajax call to get image from foursquare
         //    $.ajax({
         //         url: "https://api.foursquare.com/v2/venues/" +  eventId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
         //         method: "GET"
@@ -107,6 +110,7 @@ $(document).ready(function () {
                     "phone": events[i].contact.formattedPhone,
                     "name": events[i].name,
                     "description": events[i],
+                    "distance": events[i].location.distance,
                     "website": events[i].url,
                     "address": events[i].location.address,
                     "photo": eventPhoto,
@@ -123,7 +127,7 @@ $(document).ready(function () {
        }
     }
 
-    getLocalData("food");
+    getLocalData(category);
 
     var map = new mapboxgl.Map({
         container: 'map', // container id
@@ -133,7 +137,7 @@ $(document).ready(function () {
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
         minZoom: 15,
-        maxZoom: 20,
+        maxZoom: 17,
         className: 'mapbox-marker animate'
     });
 
@@ -142,10 +146,7 @@ $(document).ready(function () {
     map.scrollZoom.enable({ around: 'center' });
     map.dragPan.disable();
 
-    map.on('load', function () {
-        // Add a layer showing the places.
-        console.log("Current position to set center:" + currentPosition);
-
+    function buildCategoryMarkers() {
         var currentEvents = localEvents;
         var eventsObject = {
             "type": "geojson",
@@ -157,15 +158,6 @@ $(document).ready(function () {
 
         for (var i = 0; i < currentEvents.length; i++) {
             eventsObject.data.features.push(currentEvents[i]);
-            var el = document.createElement('div');
-            el.className = 'marker';
-            // el.style.backgroundImage = 'url(https://images.unsplash.com/photo-1473220464492-452fb02e6221?dpr=1&auto=compress,format&fit=crop&w=1199&h=800&q=80&cs=tinysrgb&crop=)';
-                    
-            new mapboxgl.Marker(el)
-                .setLngLat(currentPosition)
-                .addTo(map);
-
-                console.log(el);
         }
 
         console.log(eventsObject);
@@ -174,7 +166,7 @@ $(document).ready(function () {
         eventsObject.data.features.forEach(function(marker) {
             // create a DOM element for the marker
             var el = document.createElement('div');
-            el.className = 'marker';
+            el.className = 'marker ' + category;
             el.style.backgroundImage = 'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
             el.style.width = marker.properties.iconSize[0] + 'px';
             el.style.height = marker.properties.iconSize[1] + 'px';
@@ -193,6 +185,13 @@ $(document).ready(function () {
                 .setPopup(popup)
                 .addTo(map);
         });
+    }
+
+    map.on('load', function () {
+        // Add a layer showing the places.
+        console.log("Current position to set center:" + currentPosition);
+
+        buildCategoryMarkers();
     });
 
 
@@ -230,10 +229,22 @@ $(document).ready(function () {
     // by changing the cursor style to 'pointer'.
 
     $(".category").on("click", function(event) {
-        // event.preventDefault();
+        event.preventDefault();
+        // localEvents = [];
+        $( ".marker" ).remove();
         var category = $(this).attr("data-attribute");
         console.log(category);
         getLocalData(category);
-    })
+        buildCategoryMarkers();
+    });
+
+    $(".drawer-category").on("click", function() {
+        // localEvents = [];
+        $(".mdl-layout__obfuscator").trigger("click");
+    });
+
+    $("#close-drawer").on("click", function() {
+        $(".mdl-layout__obfuscator").trigger("click");
+    });
 });
 
