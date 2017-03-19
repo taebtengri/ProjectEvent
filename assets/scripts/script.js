@@ -9,15 +9,6 @@ $(document).ready(function () {
     firebase.initializeApp(config);
 
     var database = firebase.database();
-        // users = database.ref("users"),
-        // chat = database.ref("chat");
-    
-    // users.on("value", getUserData, errUserData);
-    // chat.on("value", getChatData, errChatData);
-
-    // auth.signInWithEmailAndPassword(email, pass);
-    // auth.createUserWithEmailAndPassword(email, pass);
-    // auth.onAuthStateChanged(firebaseUser => { });
 
     const txtEmail = $("#email");
     const txtPassword = $("#password");
@@ -39,14 +30,23 @@ $(document).ready(function () {
 
     $("#register").on("click", function (e) {
          // Get email and pass
-        // TODO: check for real email.
-        console.log(e);
-        const email = txtEmail.val();
-        const password = txtPassword.val();
-        const auth = firebase.auth();
-        // Sign in
-        const promise = auth.createUserWithEmailAndPassword(email, password);
-        promise.catch(e => console.log(e.message));
+        // Check for real email.
+        if (validateEmail(txtEmail.val()) == true) {
+            console.log(e);
+            const email = txtEmail.val();
+            const password = txtPassword.val();
+            const auth = firebase.auth();
+            // Sign in
+            const promise = auth.createUserWithEmailAndPassword(email, password);
+            promise.catch(e => console.log(e.message));
+        }
+        // console.log(e);
+        // const email = txtEmail.val();
+        // const password = txtPassword.val();
+        // const auth = firebase.auth();
+        // // Sign in
+        // const promise = auth.createUserWithEmailAndPassword(email, password);
+        // promise.catch(e => console.log(e.message));
     });
 
     // Add a realtime listener for user state
@@ -60,6 +60,12 @@ $(document).ready(function () {
             console.log("not logged in");
         }
     });
+
+    // Validate email   
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
 
     // call this if there is an update to chat data.
     function getChatData(data) {
