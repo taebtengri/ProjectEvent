@@ -1,15 +1,6 @@
 /* Always set the map height explicitly to define the size of the div
  * element that contains the map. */
 /*#map { position:absolute; top:0; bottom:0; width:100%; }*/
-* {
-    box-sizing: border-box;
-}
-
-.mdl-layout__content {
-  background: #fff;
-  height: 100vh;
-}
-
 #map {
   height: 100%;
   position:absolute; 
@@ -36,7 +27,7 @@ html, body {
   color: black;
 }
 
-.marker, .userMarker {
+.marker {
     display: block;
     border: none;
     border-radius: 50%;
@@ -64,21 +55,6 @@ html, body {
 .mdl-layout__drawer.is-visible {
   left: 0;
 }
-
-.form-container {
-  padding-top: 10vh;
-}
-
-form, .header {
-  text-align: center;
-}
-
-#password {
-  font: small-caption;
-  font-size:16px;
-}
-
-.signin-buttons {
-  margin-bottom: 10px;
-}
-
+@media screen and (max-width: 640px)  {
+   .mdl-navigation__link {}
+ } 
