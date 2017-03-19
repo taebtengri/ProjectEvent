@@ -4,13 +4,14 @@
     <meta charset='utf-8' />
     <title></title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-messaging.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAn_-NWvKFSIDjgMMo4bEwxb0kaVFIrVzA &libraries=places"></script>
+    <script src='assets/scripts/script.js'></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
@@ -31,11 +32,11 @@
             <div class="mdl-grid">
                 <div class="mdl-layout-spacer"></div>
                 <div class="mdl-cell mdl-cell--6-col mdl-cell--12-col-phone mdl-cell--6-col-tablet mdl-cell--4-col-desktop form-container">
-                    <form action="#">
-                        <div class="mdl-textfield mdl-js-textfield">
+                    <form action="#" id="app">
+                        <!--<div class="mdl-textfield mdl-js-textfield">
                             <input class="mdl-textfield__input" type="text" id="username" required>
                             <label class="mdl-textfield__label" for="username">Username</label>
-                        </div>
+                        </div>-->
                         <div class="mdl-textfield mdl-js-textfield">
                             <input class="mdl-textfield__input" type="email" id="email" required>
                             <label class="mdl-textfield__label" for="email">Email</label>
@@ -44,7 +45,9 @@
                             <input class="mdl-textfield__input" type="password" id="password" required>
                             <label class="mdl-textfield__label" for="password">Password</label>
                         </div><br>
-                        <a class="mdl-button mdl-js-button mdl-button--raised" id="signin" href="index.html">Sign-in</a>
+                        <a class="mdl-button mdl-js-button mdl-button--raised signin-buttons" id="signin">Sign In</a>
+                        <a class="mdl-button mdl-js-button mdl-button--raised signin-buttons" id="register">Register</a>
+                        <!--<a class="mdl-button mdl-js-button mdl-button--raised signin-buttons" id="signout" href="index.html">Sign Out</a>-->
                     </form>
                 </div>
                 <div class="mdl-layout-spacer"></div>

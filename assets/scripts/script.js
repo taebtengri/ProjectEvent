@@ -8,14 +8,58 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-    var database = firebase.database(),
-        users = database.ref("users"),    
-        chat = database.ref("chat");
+    var database = firebase.database();
+        // users = database.ref("users"),
+        // chat = database.ref("chat");
     
-    
+    // users.on("value", getUserData, errUserData);
+    // chat.on("value", getChatData, errChatData);
 
-    users.on("value", getUserData, errUserData);
-    chat.on("value", getChatData, errChatData);
+    // auth.signInWithEmailAndPassword(email, pass);
+    // auth.createUserWithEmailAndPassword(email, pass);
+    // auth.onAuthStateChanged(firebaseUser => { });
+
+    const txtEmail = $("#email");
+    const txtPassword = $("#password");
+    const loginBtn = $("#signin");
+    const signUpBtn = $("#register");
+    const logoutBtn = $("#signout");
+
+    //Add login event
+    $("#signin").on("click", function (e) {
+        // Get email and pass
+        console.log(e);
+        const email = txtEmail.val();
+        const password = txtPassword.val();
+        const auth = firebase.auth();
+        // Sign in
+        const promise = auth.signInWithEmailAndPassword(email, password);
+        promise.catch(e => console.log(e.message));
+    });
+
+    $("#register").on("click", function (e) {
+         // Get email and pass
+        // TODO: check for real email.
+        console.log(e);
+        const email = txtEmail.val();
+        const password = txtPassword.val();
+        const auth = firebase.auth();
+        // Sign in
+        const promise = auth.createUserWithEmailAndPassword(email, password);
+        promise.catch(e => console.log(e.message));
+    });
+
+    // Add a realtime listener for user state
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (firebaseUser) {
+            if (window.location != 'index.html') {
+                // window.location = 'index.html';
+            }
+            console.log(firebaseUser);
+        } else {
+            console.log("not logged in");
+        }
+    });
 
     // call this if there is an update to chat data.
     function getChatData(data) {
@@ -95,11 +139,6 @@ $(document).ready(function () {
             method: "GET"
         }).done(function (response) {
             var locations = response.response.venues;
-
-            for (var i = 0; i < locations.length; i++) {
-
-            }
-
             // pass response venue data to get locations
             getLocations(response.response.venues);
         }); 
@@ -117,6 +156,7 @@ $(document).ready(function () {
            var newFeature = {
                 "type": "Feature",
                 "properties": {
+                    "id": locationId,
                     "message": locations[i].name,
                     "phone": locations[i].contact.formattedPhone,
                     "name": locations[i].name,
@@ -218,6 +258,7 @@ $(document).ready(function () {
             // create a DOM element for the marker
             var el = document.createElement('div');
             el.className = 'marker ' + category;
+            el.setId = marker.properties.id;
             el.style.backgroundImage = 'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
             el.style.width = marker.properties.iconSize[0] + 'px';
             el.style.height = marker.properties.iconSize[1] + 'px';
