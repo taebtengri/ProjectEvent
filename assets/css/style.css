@@ -36,7 +36,7 @@ html, body {
   color: black;
 }
 
-.marker {
+.marker, .userMarker {
     display: block;
     border: none;
     border-radius: 50%;

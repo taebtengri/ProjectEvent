@@ -12,127 +12,7 @@ $(document).ready(function () {
         users = database.ref("users"),    
         chat = database.ref("chat");
     
-    // Use google as authorization provider
-    // var provider = new firebase.auth.GoogleAuthProvider();
-    // firebase.auth().signInWithRedirect(provider);
-
-    // Sign in user    
-    // auth.currentUser.linkWithPopup(provider).then(function(result) {
-    //     // Accounts successfully linked.
-    //     var credential = result.credential;
-    //     var user = result.user;
-    //     // ...
-    // }).catch(function(error) {
-    //     // Handle Errors here.
-    //     // ...
-    // });
     
-    // // Sign out
-    // firebase.auth().signOut().then(function() {
-    // // Sign-out successful.
-    // }).catch(function(error) {
-    // // An error happened.
-    // });
-
-    // var user = firebase.auth().currentUser;
-    // firebase.auth().onAuthStateChanged(function(user) {
-    //     if (user) {
-    //         // User is signed in.
-    //     } else {
-    //         // No user is signed in.
-    //     }
-    // });
-
-    // var name, email, photoUrl, uid, emailVerified;
-
-    // if (user != null) {
-    //     name = user.displayName;
-    //     email = user.email;
-    //     photoUrl = user.photoURL;
-    //     emailVerified = user.emailVerified;
-    //     uid = User.getToken();  // The user's ID, unique to the Firebase project. Do NOT use
-    //                     // this value to authenticate with your backend server, if
-    //                     // you have one. Use User.getToken() instead.
-        
-    //     user.providerData.forEach(function (profile) {
-    //         console.log("Sign-in provider: "+profile.providerId);
-    //         console.log("  Provider-specific UID: "+profile.uid);
-    //         console.log("  Name: "+profile.displayName);
-    //         console.log("  Email: "+profile.email);
-    //         console.log("  Photo URL: "+profile.photoURL);
-    //     });
-
-    // }
-
-    // // Sign up new users
-    // firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    //     // Handle Errors here.
-    //     var errorCode = error.code;
-    //     var errorMessage = error.message;
-    //     // ...
-    // });
-
-    // // Sign in existing users    
-    // firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    //     // Handle Errors here.
-    //     var errorCode = error.code;
-    //     var errorMessage = error.message;
-    //     // ...
-    // });
-
-    // firebase.auth().onAuthStateChanged(function(user) {
-    //     if (user) {
-    //         // User is signed in.
-    //         var displayName = user.displayName;
-    //         var email = user.email;
-    //         var emailVerified = user.emailVerified;
-    //         var photoURL = user.photoURL;
-    //         var isAnonymous = user.isAnonymous;
-    //         var uid = user.uid;
-    //         var providerData = user.providerData;
-    //         // ...
-    //     } else {
-    //         // User is signed out.
-    //         // ...
-    //     }
-    // });
-    
-    // Non Authenticated User
-    // function nonAuthenticatedUser() {
-    //     var auth = firebase.auth();
-
-    //     // Grabbing values from the Sign Up Section
-    //     var username = $("#username").val(),
-    //         email = $("#email").val()    
-    //         password = $("#password").val();
-
-    //         // Verify the input is not empty
-    //         if(email !== '' && password !== '' && phone !== '' && name !== ''){
-
-    //             // Sending the user data to the Database
-    //             database.ref("users").push({
-    //                 username : username,
-    //                 password : password
-    //             });
-
-    //             // Creating new users
-    //             var signedUp = auth.createUserWithEmailAndPassword(email, password);
-
-    //             signedUp.catch(function (error) {
-    //                 var errorCode = error.code;
-    //                 var errorMessage = error.message;
-
-    //                 console.log(errorCode, errorMessage);
-    //             });
-    //             // UserSignedIn();
-
-    //             console.log(name, phone, email, password);
-    //         }
-
-    //     else{
-    //         console.log("Fill out the form...");
-    //     }
-    // }
 
     users.on("value", getUserData, errUserData);
     chat.on("value", getChatData, errChatData);
@@ -203,25 +83,7 @@ $(document).ready(function () {
     
     console.log(getDate());
 
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };  
-
-        // set center of map to our position.            
-        currentPosition = [pos.lng, pos.lat];
-        map.setCenter(currentPosition);
-
-        }, function() {
-            handleLocationError(true, infoWindow, map.getCenter());
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-    }
+    
 
     function getLocalData(category) {
         var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
@@ -311,7 +173,7 @@ $(document).ready(function () {
         // create a DOM element for the marker
         var el = document.createElement('div');
         el.className = 'userMarker';
-        el.style.backgroundImage = 'url(https://placekitten.com/g/' + [20, 20].join('/') + '/)';
+        el.style.backgroundColor = 'black';
         el.style.width = '20px';
         el.style.height = '20px';
 
@@ -328,6 +190,7 @@ $(document).ready(function () {
             .addTo(map);
     }
 
+    // Lock zoom to center and disable dragging of map.
     map.doubleClickZoom.disable();
     map.scrollZoom.disable();
     map.scrollZoom.enable({ around: 'center' });
@@ -381,9 +244,29 @@ $(document).ready(function () {
     // Load map
     map.on('load', function () {
         // Add a layer showing the places.
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };  
+
+            // set center of map to our position.            
+            currentPosition = [pos.lng, pos.lat];
+            map.setCenter(currentPosition);
+            $(".userMarker").remove();
+            setUserMarker();    
+
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
         console.log("Current position to set center:" + currentPosition);
         buildCategoryMarkers();
-        setUserMarker();
     });
 
     // 
@@ -398,7 +281,6 @@ $(document).ready(function () {
 
     // Close drawer if you choose a category from the list in the drawer
     $(".drawer-category").on("click", function() {
-        // localEvents = [];
         $(".mdl-layout__obfuscator").trigger("click");
     });
     
