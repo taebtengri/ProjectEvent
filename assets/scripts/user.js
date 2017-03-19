@@ -16,29 +16,10 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
-    
-<script>
-(function() {
-  'use strict';
-  var snackbarContainer = document.querySelector('#demo-snackbar-example');
-  var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-  var handler = function(event) {
-    showSnackbarButton.style.backgroundColor = '';
-  };
-  showSnackbarButton.addEventListener('click', function() {
-    'use strict';
-    showSnackbarButton.style.backgroundColor = '#' +
-        Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    var data = {
-      message: 'Button color changed.',
-      timeout: 2000,
-      actionHandler: handler,
-      actionText: 'Undo'
-    };
-    snackbarContainer.MaterialSnackbar.showSnackbar(data);
-  });
-}());
-</script>
+
+
+
+
 
     // Add login event
     $("#signin").on("click", function (e) {
@@ -51,6 +32,7 @@ $(document).ready(function () {
         const promise = auth.signInWithEmailAndPassword(email, password);
         promise.catch(e => console.log(e.message));
     });
+        
 
     // Register new user.
     $("#register").on("click", function (e) {
@@ -76,6 +58,26 @@ $(document).ready(function () {
             console.log(firebaseUser);
         } else {
             console.log("not logged in");
+            (function() {
+                'use strict';
+                  var snackbarContainer = document.querySelector('#demo-snackbar-example');
+                  var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+                  var handler = function(event) {
+                    showSnackbarButton.style.backgroundColor = '';
+                  };
+                  showSnackbarButton.addEventListener('click', function() {
+                    'use strict';
+                    showSnackbarButton.style.backgroundColor = '#' +
+                        Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    var data = {
+                      message: 'Button color changed.',
+                      timeout: 2000,
+                      actionHandler: handler,
+                      actionText: 'Undo'
+                    };
+                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                  });
+        }());
         }
     });
 
