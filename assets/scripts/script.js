@@ -1,11 +1,188 @@
 $(document).ready(function () {
+    var config = {
+        apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
+        authDomain: "mapchat-17eba.firebaseapp.com",
+        databaseURL: "https://mapchat-17eba.firebaseio.com",
+        storageBucket: "mapchat-17eba.appspot.com",
+        messagingSenderId: "484471510094"
+    };
+    firebase.initializeApp(config);
+
+    var database = firebase.database(),
+        users = database.ref("users"),    
+        chat = database.ref("chat");
+    
+    // Use google as authorization provider
+    // var provider = new firebase.auth.GoogleAuthProvider();
+    // firebase.auth().signInWithRedirect(provider);
+
+    // Sign in user    
+    // auth.currentUser.linkWithPopup(provider).then(function(result) {
+    //     // Accounts successfully linked.
+    //     var credential = result.credential;
+    //     var user = result.user;
+    //     // ...
+    // }).catch(function(error) {
+    //     // Handle Errors here.
+    //     // ...
+    // });
+    
+    // // Sign out
+    // firebase.auth().signOut().then(function() {
+    // // Sign-out successful.
+    // }).catch(function(error) {
+    // // An error happened.
+    // });
+
+    // var user = firebase.auth().currentUser;
+    // firebase.auth().onAuthStateChanged(function(user) {
+    //     if (user) {
+    //         // User is signed in.
+    //     } else {
+    //         // No user is signed in.
+    //     }
+    // });
+
+    // var name, email, photoUrl, uid, emailVerified;
+
+    // if (user != null) {
+    //     name = user.displayName;
+    //     email = user.email;
+    //     photoUrl = user.photoURL;
+    //     emailVerified = user.emailVerified;
+    //     uid = User.getToken();  // The user's ID, unique to the Firebase project. Do NOT use
+    //                     // this value to authenticate with your backend server, if
+    //                     // you have one. Use User.getToken() instead.
+        
+    //     user.providerData.forEach(function (profile) {
+    //         console.log("Sign-in provider: "+profile.providerId);
+    //         console.log("  Provider-specific UID: "+profile.uid);
+    //         console.log("  Name: "+profile.displayName);
+    //         console.log("  Email: "+profile.email);
+    //         console.log("  Photo URL: "+profile.photoURL);
+    //     });
+
+    // }
+
+    // // Sign up new users
+    // firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    //     // Handle Errors here.
+    //     var errorCode = error.code;
+    //     var errorMessage = error.message;
+    //     // ...
+    // });
+
+    // // Sign in existing users    
+    // firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    //     // Handle Errors here.
+    //     var errorCode = error.code;
+    //     var errorMessage = error.message;
+    //     // ...
+    // });
+
+    // firebase.auth().onAuthStateChanged(function(user) {
+    //     if (user) {
+    //         // User is signed in.
+    //         var displayName = user.displayName;
+    //         var email = user.email;
+    //         var emailVerified = user.emailVerified;
+    //         var photoURL = user.photoURL;
+    //         var isAnonymous = user.isAnonymous;
+    //         var uid = user.uid;
+    //         var providerData = user.providerData;
+    //         // ...
+    //     } else {
+    //         // User is signed out.
+    //         // ...
+    //     }
+    // });
+    
+    // Non Authenticated User
+    // function nonAuthenticatedUser() {
+    //     var auth = firebase.auth();
+
+    //     // Grabbing values from the Sign Up Section
+    //     var username = $("#username").val(),
+    //         email = $("#email").val()    
+    //         password = $("#password").val();
+
+    //         // Verify the input is not empty
+    //         if(email !== '' && password !== '' && phone !== '' && name !== ''){
+
+    //             // Sending the user data to the Database
+    //             database.ref("users").push({
+    //                 username : username,
+    //                 password : password
+    //             });
+
+    //             // Creating new users
+    //             var signedUp = auth.createUserWithEmailAndPassword(email, password);
+
+    //             signedUp.catch(function (error) {
+    //                 var errorCode = error.code;
+    //                 var errorMessage = error.message;
+
+    //                 console.log(errorCode, errorMessage);
+    //             });
+    //             // UserSignedIn();
+
+    //             console.log(name, phone, email, password);
+    //         }
+
+    //     else{
+    //         console.log("Fill out the form...");
+    //     }
+    // }
+
+    users.on("value", getUserData, errUserData);
+    chat.on("value", getChatData, errChatData);
+
+    // call this if there is an update to chat data.
+    function getChatData(data) {
+        var log = data.val();
+        // var chatKeys = Object.keys(log);
+        // setChatData(log, chatKeys);
+    }
+
+    // if there is an update to chat data call this to place in DOM.
+    function setChatData(chat, chatKeys) {
+        // $("#chat-card").empty();
+        // for (var i = 0; i < chatKeys.length; i++) {
+        //     let key = chatKeys[i];
+        //     let name = chat[key].name;
+        //     let message = chat[key].message;
+        //     let messageStatus = chat[key].messageStatus;
+        //     let playerNumber = chat[key].player_number;
+
+        //     if (messageStatus == "leave") {
+        //         $("#chat-card").append("<p><span class='player-left'>" + name + " " + message  +"</span></p>");
+        //     } else {
+        //         $("#chat-card").append("<p><span class='player" + playerNumber + "-chat'>" + name + "</span>: " + message + "</p>");
+        //     }
+        // }
+    }
+
+      // if user data changes call this
+    function getUserData(data) {
+        console.log("User Data Update");
+    }
+
+     // log if error received from chat data value.
+    function errUserData(err) {
+        console.log(err);
+    }
+
+    // log if error received from chat data value.
+    function errChatData(err) {
+        console.log(err);
+    }
 
     var APIKeyFoursquare = "client_id=SUS4V4KN3LDW2BEU5G4TJIRA2R3VK5GG4TA3A15VOOSYEMAE&client_secret=5NOZCH3QOPXR3VNYHJJH4SOMJRHVIIQV5BHWOLXX3WDHAY4J";
     mapboxgl.accessToken = 'pk.eyJ1IjoiY2JyYW5ub24iLCJhIjoiY2owYTl2cDh4MGdqeDJxcGZhYjR3NzY1MyJ9.6nT2tLHDeMTpYnwMV7iV9w';
 
-    var currentPosition = [-84.39, 33.74];
-    var localEvents = [];
-    var category = "music";
+    var currentPosition = [-84.39, 33.74],
+        localEvents = [],
+        category = "music";
 
     function getDate() {
         var today = new Date();
@@ -34,6 +211,7 @@ $(document).ready(function () {
             lng: position.coords.longitude
             };  
 
+        // set center of map to our position.            
         currentPosition = [pos.lng, pos.lat];
         map.setCenter(currentPosition);
 
@@ -45,75 +223,39 @@ $(document).ready(function () {
         handleLocationError(false, infoWindow, map.getCenter());
     }
 
-    // function displayPosition(position) {
-    //     alert("Latitude: " + position.coords.latitude + ", Longitude: " + position.coords.longitude);
-    //     currentPosition = [position.coords.latitiude, position.coords.longitutde];
-    //     console.log(currentPosition);
-    // }
-
-    // function displayError(error) {
-    //     var errors = { 
-    //         1: 'Permission denied',
-    //         2: 'Position unavailable',
-    //         3: 'Request timeout'
-    //     };
-    //     alert("Error: " + errors[error.code]);
-    // }
-
     function getLocalData(category) {
         var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
         console.log(queryUR);
 
+        // Call to foursquare for nearby location data
         $.ajax({
             url: queryUR,
             method: "GET"
         }).done(function (response) {
-            // Log the queryURL
-            // console.log(queryUR);
-            // Log the resulting object
-            // console.log("API RESPONSE:");
-            // console.log(response);
-            // var pos = [];
-            getEvent(response.response.venues);
+            // pass response venue data to get locations
+            getLocations(response.response.venues);
         }); 
     }
 
-    function getEvent(events) {
-        for (var i = 0; i < events.length; i++) {
-           var event = events[i];
-           var coordinates = [events[i].location.lng, events[i].location.lat];
-           var eventId = events[i].id;
-           var eventPhoto = "";
-           console.log("Event:");
-           console.log(event);
-
-
-        // Ajax call to get image from foursquare
-        //    $.ajax({
-        //         url: "https://api.foursquare.com/v2/venues/" +  eventId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
-        //         method: "GET"
-        //     }).done(function (response) {
-        //         // Log the queryURL
-        //         // console.log(queryUR);
-        //         // Log the resulting object
-        //         // console.log("API RESPONSE:");
-        //         if (response.response.photos.items[0] != undefined) {
-        //             eventPhoto = response.response.photos.items[0].prefix + response.response.photos.items[0].suffix;
-        //             console.log(eventPhoto);
-        //         }
-        //     }); 
+    // Loop through locations  
+    function getLocations(locations) {
+        for (var i = 0; i < locations.length; i++) {
+           var location = locations[i];
+           var coordinates = [locations[i].location.lng, locations[i].location.lat];
+           var locationId = locations[i].id;
+           var locationPhoto = "";
 
            var newFeature = {
                 "type": "Feature",
                 "properties": {
-                    "message": events[i].name,
-                    "phone": events[i].contact.formattedPhone,
-                    "name": events[i].name,
-                    "description": events[i],
-                    "distance": events[i].location.distance,
-                    "website": events[i].url,
-                    "address": events[i].location.address,
-                    "photo": eventPhoto,
+                    "message": locations[i].name,
+                    "phone": locations[i].contact.formattedPhone,
+                    "name": locations[i].name,
+                    "description": locations[i],
+                    "distance": locations[i].location.distance,
+                    "website": locations[i].url,
+                    "address": locations[i].location.address,
+                    "photo": locationPhoto,
                     "icon": "theatre",
                     "iconSize": [40, 40]
                 },
@@ -121,31 +263,70 @@ $(document).ready(function () {
                     "type": "Point",
                     "coordinates": coordinates
                 }
-           };
+           }; 
+            
+           // Call to foursquare using location ID to get photo of location 
+            $.ajax({
+                url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
+                method: "GET"
+            }).done(function (response) {
+                // Log the queryURL
+                console.log(response);
+                // Log the resulting object
+                // console.log("API RESPONSE:");
+                if (response.response.photos.items[0] != undefined) {
+                    locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
+                    console.log(locationPhoto);
+                }
+            });  
+
+           
            localEvents.push(newFeature);
-        //    console.log(localEvents);
        }
     }
 
+    // Get data of nearby locations 
     getLocalData(category);
-
+    
+    // Creates our map and adds it to div with ID: map
     var map = new mapboxgl.Map({
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/light-v9', //stylesheet location
         zoom: 17, // starting zoom
-        // maxBounds: bounds, // Sets bounds as max
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
         minZoom: 15,
         maxZoom: 17,
         className: 'mapbox-marker animate'
     });
+    
+    function setUserMarker() {
+        // create a DOM element for the marker
+        var el = document.createElement('div');
+        el.className = 'userMarker';
+        el.style.backgroundImage = 'url(https://placekitten.com/g/' + [20, 20].join('/') + '/)';
+        el.style.width = '20px';
+        el.style.height = '20px';
+
+        console.log("USER MARKER");
+
+        // create the popup
+        var userPopup = new mapboxgl.Popup({offset: 25})
+            .setText("You Are Here");
+
+        // add marker to map to show current location
+        new mapboxgl.Marker(el, {offset: [-20/ 2, -20 / 2]})
+            .setLngLat(currentPosition)
+            .setPopup(userPopup)
+            .addTo(map);
+    }
 
     map.doubleClickZoom.disable();
     map.scrollZoom.disable();
     map.scrollZoom.enable({ around: 'center' });
     map.dragPan.disable();
 
+    // Creates markers and popups from our JSON response and populates the map with them
     function buildCategoryMarkers() {
         var currentEvents = localEvents;
         var eventsObject = {
@@ -174,7 +355,8 @@ $(document).ready(function () {
             el.addEventListener('click', function() {
                 // window.alert(marker.properties.name);
             });
-
+            console.log("IMAGE PROPERTY:");
+            console.log("Image: " + marker.properties.photo);
             // create the popup
             var popup = new mapboxgl.Popup({offset: 25})
                 .setText(marker.properties.name);
@@ -184,65 +366,36 @@ $(document).ready(function () {
                 .setLngLat(marker.geometry.coordinates)
                 .setPopup(popup)
                 .addTo(map);
+            
+            console.log(marker.geometry.coordinates);
         });
     }
 
+    // Load map
     map.on('load', function () {
         // Add a layer showing the places.
         console.log("Current position to set center:" + currentPosition);
-
         buildCategoryMarkers();
+        setUserMarker();
     });
 
-
-    // When a click event occurs near a place, open a popup at the location of
-    // the feature, with description HTML from its properties.
-    // map.on('click', function (e) {
-    //     var features = map.queryRenderedFeatures(e.point, { layers: ['places'] });
-
-    //     if (!features.length) {
-    //         return;
-    //     }
-
-    //     var feature = features[0];
-
-    //     if (features.length) {
-    //         // Get coordinates from the symbol and center the map on those coordinates
-    //         map.flyTo({center: features[0].geometry.coordinates});
-    //     }
-
-    //     // Populate the popup and set its coordinates
-    //     // based on the feature found.
-    //     var popup = new mapboxgl.Popup()
-    //         .setLngLat(feature.geometry.coordinates)
-    //         .setHTML(feature.properties.description)
-    //         .addTo(map);
-    // });
-
-    // Create a popup, but don't add it to the map yet.
-    // var popup = new mapboxgl.Popup({
-    //     closeButton: false,
-    //     closeOnClick: false
-    // });
-
-    // Use the same approach as above to indicate that the symbols are clickable
-    // by changing the cursor style to 'pointer'.
-
+    // 
     $(".category").on("click", function(event) {
         event.preventDefault();
-        // localEvents = [];
-        $( ".marker" ).remove();
+        $(".marker").remove();
         var category = $(this).attr("data-attribute");
         console.log(category);
         getLocalData(category);
         buildCategoryMarkers();
     });
 
+    // Close drawer if you choose a category from the list in the drawer
     $(".drawer-category").on("click", function() {
         // localEvents = [];
         $(".mdl-layout__obfuscator").trigger("click");
     });
-
+    
+    // Close drawer if you click the close button for when you don't want to choose new category
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
     });
