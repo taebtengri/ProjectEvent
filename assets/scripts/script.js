@@ -207,8 +207,8 @@ $(document).ready(function () {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
         var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
             };  
 
         // set center of map to our position.            
@@ -232,6 +232,12 @@ $(document).ready(function () {
             url: queryUR,
             method: "GET"
         }).done(function (response) {
+            var locations = response.response.venues;
+
+            for (var i = 0; i < locations.length; i++) {
+
+            }
+
             // pass response venue data to get locations
             getLocations(response.response.venues);
         }); 
@@ -239,6 +245,7 @@ $(document).ready(function () {
 
     // Loop through locations  
     function getLocations(locations) {
+        localEvents = [];
         for (var i = 0; i < locations.length; i++) {
            var location = locations[i];
            var coordinates = [locations[i].location.lng, locations[i].location.lat];
@@ -341,7 +348,7 @@ $(document).ready(function () {
             eventsObject.data.features.push(currentEvents[i]);
         }
 
-        console.log(eventsObject);
+        console.log(localEvents);
 
         // add markers to map
         eventsObject.data.features.forEach(function(marker) {
