@@ -9,27 +9,101 @@ $(document).ready(function () {
     firebase.initializeApp(config);
 
     var database = firebase.database();
+    var users = database.ref("users");
 
-    function login() {
-        // Log the user in via Twitter
-        var provider = new firebase.auth.TwitterAuthProvider();
-        firebase.auth().signInWithPopup(provider).catch(function(error) {
-          console.log("Error authenticating user:", error);
-        });
+    var user;
+    var name, email, photoUrl, uid, emailVerified;
+
+    // if user signed in get values of current user
+    if (user != null) {
+        name = user.displayName;
+        email = user.email;
+        photoUrl = user.photoURL;
+        emailVerified = user.emailVerified;
+        uid = user.uid;  // The user's ID, unique to the Firebase project. Do NOT use
+                        // this value to authenticate with your backend server, if
+                        // you have one. Use User.getToken() instead.
     }
+    
+    var txtUsername = $("#username");
+    var txtEmail = $("#email");
+    var txtPassword = $("#password");
+    var loginBtn = $("#signin");
+    var signUpBtn = $("#register");
+    var logoutBtn = $("#signout");
 
-    firebase.auth().onAuthStateChanged(function(user) {
-        // Once authenticated, instantiate Firechat with the logged in user
-        if (user) {
-          initChat(user);
+    // Add login event
+    $("#signin").on("click", function (e) {
+        // Get email and pass
+        console.log(e);
+        var email = txtEmail.val();
+        var password = txtPassword.val();
+        var auth = firebase.auth();
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+        });
+    });
+
+    // Register new user.
+    $("#register").on("click", function (e) {
+         // Get email and pass
+         var email = txtEmail.val();
+         var password = txtPassword.val();
+         var auth = firebase.auth();
+        // Check for real email.
+        if (validateEmail(email) == true) {
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // ...
+            });
         }
     });
 
-    var provider = new firebase.auth.TwitterAuthProvider();
-    firebase.auth().signInWithPopup(provider).catch(function(error) {
-        console.log("Error authenticating user:", error);
+    // Sign out on button click
+     $("#signout").on("click", function (e) {
+         firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+        }).catch(function(error) {
+            // An error happened.
+        });
+     });
+
+    // Add a realtime listener for user state
+    firebase.auth().onAuthStateChanged(function(firebaseUser) {
+        user = firebase.auth().currentUser;
+        console.log(user);
+        // Add display name to user profile. Probably should move this somewhere else
+        firebaseUser.updateProfile({
+            displayName: "Jane Q. User",
+            photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then(function() {
+            // Update successful.
+        }, function(error) {
+            // An error happened.
+        });
+
+        if (firebaseUser) {
+            console.log(firebaseUser);
+            if (window.location != 'index.html') {
+                // window.location = 'index.html';
+            }
+        } else {
+            console.log("not logged in");
+        }
     });
 
+    // Validate email   
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
+    // initialize chat
     function initChat(user) {
         // Get a Firebase Database ref
         var chatRef = firebase.database().ref("chat");
@@ -47,93 +121,25 @@ $(document).ready(function () {
         chat.resumeSession();
     });
 
-    // const txtEmail = $("#email");
-    // const txtPassword = $("#password");
-    // const loginBtn = $("#signin");
-    // const signUpBtn = $("#register");
-    // const logoutBtn = $("#signout");
-
-    // Add login event
-    // $("#signin").on("click", function (e) {
-    //     // Get email and pass
-    //     console.log(e);
-    //     const email = txtEmail.val();
-    //     const password = txtPassword.val();
-    //     const auth = firebase.auth();
-    //     // Sign in
-    //     const promise = auth.signInWithEmailAndPassword(email, password);
-    //     promise.catch(e => console.log(e.message));
-    // });
-        
-
-    // // Register new user.
-    // $("#register").on("click", function (e) {
-    //      // Get email and pass
-    //     // Check for real email.
-    //     if (validateEmail(txtEmail.val()) == true) {
-    //         console.log(e);
-    //         const email = txtEmail.val();
-    //         const password = txtPassword.val();
-    //         const auth = firebase.auth();
-    //         // Sign in
-    //         const promise = auth.createUserWithEmailAndPassword(email, password);
-    //         promise.catch(e => console.log(e.message));
-    //     }
-    // });
-
-    // // Add a realtime listener for user state
-    // firebase.auth().onAuthStateChanged(firebaseUser => {
-    //     if (firebaseUser) {
-    //         if (window.location != 'index.html') {
-    //             window.location = '/index.html'
-    //         }
-    //         console.log(firebaseUser);
-    //         $("#signin").click();
-    //     } else {
-    //         console.log("not logged in");
-    //         // open snackbar
-    //         (function () {
-    //             var snackbarContainer = document.querySelector('#demo-snackbar-example');
-    //             var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-    //             var handler = function (event) {
-    //                 showSnackbarButton.style.backgroundColor = '';
-    //             };
-    //             showSnackbarButton.style.backgroundColor = '#' +
-    //                 Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    //             var data = {
-    //                 message: 'User not logged in.',
-    //                 timeout: 2000
-    //             };
-    //             snackbarContainer.MaterialSnackbar.showSnackbar(data);
-    //         });
-    //     }
-    // });
-
-    // (function() {
-    //     'use strict';
-    //         var snackbarContainer = document.querySelector('#demo-snackbar-example');
-    //         var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-    //         var handler = function(event) {
-    //         showSnackbarButton.style.backgroundColor = '';
-    //         };
-    //         showSnackbarButton.addEventListener('click', function() {
-    //         'use strict';
-    //         showSnackbarButton.style.backgroundColor = '#' +
-    //             Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    //         var data = {
-    //             message: 'User not logged in.',
-    //             timeout: 2000,
-    //         //   actionHandler: handler,
-    //         //   actionText: 'Undo'
-    //         };
-    //         snackbarContainer.MaterialSnackbar.showSnackbar(data);
-    //         });
-    // }());
-
-    // Validate email   
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-    }
+    (function() {
+    'use strict';
+        var snackbarContainer = document.querySelector('#demo-snackbar-example');
+        var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+        var handler = function(event) {
+        showSnackbarButton.style.backgroundColor = '';
+        };
+        showSnackbarButton.addEventListener('click', function() {
+        'use strict';
+        showSnackbarButton.style.backgroundColor = '#' +
+            Math.floor(Math.random() * 0xFFFFFF).toString(16);
+        var data = {
+            message: 'User not logged in.',
+            timeout: 2000,
+        //   actionHandler: handler,
+        //   actionText: 'Undo'
+        };
+        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        });
+    }()); 
 });
 

@@ -45,6 +45,12 @@ html, body {
   border-radius: 50%;
 }
 
+.userMarker:hover, .marker:active {
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	-moz-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
 .mapboxgl-popup-content {
   width: 200px;
   height: 200px;

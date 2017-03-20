@@ -183,6 +183,19 @@ $(document).ready(function () {
         el.style.backgroundColor = 'black';
         el.style.width = '20px';
         el.style.height = '20px';
+        $(el).css("transition", "all 0.75s ease");
+
+        el.addEventListener('mouseover', function() {
+            $(el).css("background-color", "blue");
+            $(el).css("width", "40px");
+            $(el).css("height", "40px");
+        });
+
+        el.addEventListener('mouseout', function() {
+            $(el).css("background-color", "black");
+            $(el).css("width", "20px");
+            $(el).css("height", "20px");
+        });
 
         console.log("USER MARKER");
 
@@ -230,8 +243,8 @@ $(document).ready(function () {
             el.style.width = marker.properties.iconSize[0] + 'px';
             el.style.height = marker.properties.iconSize[1] + 'px';
 
-            el.addEventListener('click', function() {
-                // window.alert(marker.properties.name);
+            el.addEventListener('hover', function() {
+                window.alert(marker.properties.name);
             });
             console.log("IMAGE PROPERTY:");
             console.log("Image: " + marker.properties.photo);
