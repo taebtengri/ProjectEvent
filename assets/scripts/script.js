@@ -9,6 +9,7 @@ $(document).ready(function () {
     firebase.initializeApp(config);
 
     var database = firebase.database();
+    var chat = database.ref("chat");
 
     const txtEmail = $("#email");
     const txtPassword = $("#password");
@@ -294,6 +295,11 @@ $(document).ready(function () {
     // Close drawer if you click the close button for when you don't want to choose new category
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
+    });
+
+    $("#map").on("click", ".chat", function () {
+        var chatId = $(this).attr("id");
+        console.log(chatId);
     });
 });
 

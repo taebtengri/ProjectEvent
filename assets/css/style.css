@@ -17,14 +17,6 @@ html, body {
   z-index: 0
 }
 
-#section1-container {
-    background-color:black;
-    background: rgba(0, 0, 0, 0.75);
-    color: #fff;
-    position:relative;
-    z-index: 1
-}
-
 .demo-layout-transparent {
   background: ghostwhite;
   color: black;
