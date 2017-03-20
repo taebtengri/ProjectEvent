@@ -49,10 +49,30 @@
             </button>
         </div>
         <main class="mdl-layout__content">
-            <div id='map'></div>
-            <div id='text'></div>
+            <div id='map'>
+                <div id="chat-card-container" class="mdl-grid">
+                    <div class="mdl-layout-spacer"></div>
+                    <div id="chat-card" class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--6-col-desktop">
+                    </div>
+                    <div class="mdl-layout-spacer"></div>
+                </div>
+                <div id="chat-input-container" class="mdl-grid">
+                    <div class="mdl-layout-spacer"></div>
+                    <div id="chat-input" class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--6-col-desktop">
+                        <form action="#">
+                            <div id="form-items">
+                                <div class="mdl-textfield mdl-js-textfield" id="chat-input-wrap">
+                                    <input class="mdl-textfield__input chatty" type="text" id="chat-input">
+                                    <label class="mdl-textfield__label" for="chat-input">What you got?</label>
+                                </div>
+                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="chat">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="mdl-layout-spacer"></div>
+                </div>
+            </div>
         </main>
-        
     </div>
 </body>
 </html>

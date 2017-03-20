@@ -16,11 +16,6 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
-
-
-
-
-
     // Add login event
     $("#signin").on("click", function (e) {
         // Get email and pass
@@ -53,38 +48,55 @@ $(document).ready(function () {
     firebase.auth().onAuthStateChanged(firebaseUser => {
         if (firebaseUser) {
             if (window.location != 'index.html') {
-                // window.location = 'index.html';
+                window.location = '/index.html'
             }
             console.log(firebaseUser);
+            $("#signin").click();
         } else {
             console.log("not logged in");
-            (function() {
-                'use strict';
-                  var snackbarContainer = document.querySelector('#demo-snackbar-example');
-                  var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-                  var handler = function(event) {
+            // open snackbar
+            (function () {
+                var snackbarContainer = document.querySelector('#demo-snackbar-example');
+                var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+                var handler = function (event) {
                     showSnackbarButton.style.backgroundColor = '';
-                  };
-                  showSnackbarButton.addEventListener('click', function() {
-                    'use strict';
-                    showSnackbarButton.style.backgroundColor = '#' +
-                        Math.floor(Math.random() * 0xFFFFFF).toString(16);
-                    var data = {
-                      message: 'Button color changed.',
-                      timeout: 2000,
-                      actionHandler: handler,
-                      actionText: 'Undo'
-                    };
-                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
-                  });
-        }());
+                };
+                showSnackbarButton.style.backgroundColor = '#' +
+                    Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                var data = {
+                    message: 'User not logged in.',
+                    timeout: 2000
+                };
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+            });
         }
     });
+
+    // (function() {
+    //     'use strict';
+    //         var snackbarContainer = document.querySelector('#demo-snackbar-example');
+    //         var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+    //         var handler = function(event) {
+    //         showSnackbarButton.style.backgroundColor = '';
+    //         };
+    //         showSnackbarButton.addEventListener('click', function() {
+    //         'use strict';
+    //         showSnackbarButton.style.backgroundColor = '#' +
+    //             Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    //         var data = {
+    //             message: 'User not logged in.',
+    //             timeout: 2000,
+    //         //   actionHandler: handler,
+    //         //   actionText: 'Undo'
+    //         };
+    //         snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    //         });
+    // }());
 
     // Validate email   
     function validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
-    } 
+    }
 });
 

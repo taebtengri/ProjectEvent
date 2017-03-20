@@ -27,17 +27,28 @@ html, body {
   color: black;
 }
 
+.form-container, .header, .mapboxgl-popup-content{
+  text-align: center;
+}
+
 .marker {
     display: block;
     border: none;
-    border-radius: 50%;
     cursor: pointer;
     padding: 0;
+}
+
+.userMarker, .marker {
+  border-radius: 50%;
 }
 
 .mapboxgl-popup-content {
   width: 200px;
   height: 200px;
+}
+
+.form-container {
+  margin-top: 20vh;
 }
 
 .mapboxgl-popup {
@@ -55,6 +66,7 @@ html, body {
 .mdl-layout__drawer.is-visible {
   left: 0;
 }
+
 @media screen and (max-width: 640px)  {
    .mdl-navigation__link {}
  } 

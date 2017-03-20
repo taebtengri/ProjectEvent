@@ -16,39 +16,6 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
-    //Add login event
-    $("#signin").on("click", function (e) {
-        // Get email and pass
-        console.log(e);
-        const email = txtEmail.val();
-        const password = txtPassword.val();
-        const auth = firebase.auth();
-        // Sign in
-        const promise = auth.signInWithEmailAndPassword(email, password);
-        promise.catch(e => console.log(e.message));
-    });
-
-    $("#register").on("click", function (e) {
-         // Get email and pass
-        // Check for real email.
-        if (validateEmail(txtEmail.val()) == true) {
-            console.log(e);
-            const email = txtEmail.val();
-            const password = txtPassword.val();
-            const auth = firebase.auth();
-            // Sign in
-            const promise = auth.createUserWithEmailAndPassword(email, password);
-            promise.catch(e => console.log(e.message));
-        }
-        // console.log(e);
-        // const email = txtEmail.val();
-        // const password = txtPassword.val();
-        // const auth = firebase.auth();
-        // // Sign in
-        // const promise = auth.createUserWithEmailAndPassword(email, password);
-        // promise.catch(e => console.log(e.message));
-    });
-
     // Add a realtime listener for user state
     firebase.auth().onAuthStateChanged(firebaseUser => {
         if (firebaseUser) {
@@ -60,12 +27,6 @@ $(document).ready(function () {
             console.log("not logged in");
         }
     });
-
-    // Validate email   
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-    }
 
     // call this if there is an update to chat data.
     function getChatData(data) {
@@ -134,7 +95,6 @@ $(document).ready(function () {
     console.log(getDate());
 
     
-
     function getLocalData(category) {
         var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
         console.log(queryUR);
@@ -146,7 +106,7 @@ $(document).ready(function () {
         }).done(function (response) {
             var locations = response.response.venues;
             // pass response venue data to get locations
-            getLocations(response.response.venues);
+            getLocations(locations);
         }); 
     }
 
@@ -276,7 +236,7 @@ $(document).ready(function () {
             console.log("Image: " + marker.properties.photo);
             // create the popup
             var popup = new mapboxgl.Popup({offset: 25})
-                .setText(marker.properties.name);
+                .setHTML('<p>' + marker.properties.name + '</p><button class="mdl-button mdl-js-button mdl-button--raised chat" id="' + el.setId + '">Chat</button>');
 
             // add marker to map
             new mapboxgl.Marker(el, {offset: [-marker.properties.iconSize[0] / 2, -marker.properties.iconSize[1] / 2]})
