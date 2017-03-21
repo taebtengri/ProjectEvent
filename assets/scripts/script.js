@@ -17,18 +17,6 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
-    // Add a realtime listener for user state
-    firebase.auth().onAuthStateChanged(firebaseUser => {
-        if (firebaseUser) {
-            if (window.location != 'index.html') {
-                // window.location = 'index.html';
-            }
-            console.log(firebaseUser);
-        } else {
-            console.log("not logged in");
-        }
-    });
-
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
@@ -313,6 +301,18 @@ $(document).ready(function () {
     $("#map").on("click", ".chat", function () {
         var chatId = $(this).attr("id");
         console.log(chatId);
+    });
+
+    // Sign out on button click
+    $("#signout").on("click", function (e) {
+        console.log("test");
+         firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+            window.location = 'signin.html'; 
+        }).catch(function(error) {
+            // An error happened.
+        });
+         return false;
     });
 });
 

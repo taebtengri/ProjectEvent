@@ -8,23 +8,12 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-    var database = firebase.database();
-    var users = database.ref("users");
+    var database = firebase.database(),
+        users = database.ref("users"),
+        chat = database.ref("chat");
 
     var user;
     var name, email, photoUrl, uid, emailVerified;
-
-    // if user signed in get values of current user
-    if (user != null) {
-        name = user.displayName;
-        email = user.email;
-        photoUrl = user.photoURL;
-        emailVerified = user.emailVerified;
-        uid = user.uid;  // The user's ID, unique to the Firebase project. Do NOT use
-                        // this value to authenticate with your backend server, if
-                        // you have one. Use User.getToken() instead.
-    }
-    
     var txtUsername = $("#username");
     var txtEmail = $("#email");
     var txtPassword = $("#password");
@@ -60,38 +49,28 @@ $(document).ready(function () {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 // ...
+                console.log(user)
             });
         }
     });
 
-    // Sign out on button click
-     $("#signout").on("click", function (e) {
-         firebase.auth().signOut().then(function() {
-            // Sign-out successful.
-        }).catch(function(error) {
-            // An error happened.
-        });
-     });
-
-    // Add a realtime listener for user state
-    firebase.auth().onAuthStateChanged(function(firebaseUser) {
-        user = firebase.auth().currentUser;
-        console.log(user);
-        // Add display name to user profile. Probably should move this somewhere else
-        firebaseUser.updateProfile({
-            displayName: "Jane Q. User",
-            photoURL: "https://example.com/jane-q-user/profile.jpg"
+    function setuUsername(userName) {
+        user.updateProfile({
+            displayName: userName
         }).then(function() {
             // Update successful.
         }, function(error) {
             // An error happened.
         });
+    }
 
-        if (firebaseUser) {
-            console.log(firebaseUser);
-            if (window.location != 'index.html') {
-                // window.location = 'index.html';
-            }
+    // Add a realtime listener for user state
+    firebase.auth().onAuthStateChanged(function(user) {
+        user = firebase.auth().currentUser;
+        // Add display name to user profile. Probably should move this somewhere else
+        if (user) {
+            window.location = 'index.html';
+            console.log(user);
         } else {
             console.log("not logged in");
         }
@@ -115,31 +94,31 @@ $(document).ready(function () {
         chat.setUser(user.uid, user.displayName);
     }
     
-    var firebaseRef = firebase.database().ref("firechat");
-    var chat = new Firechat(firebaseRef);
-        chat.setUser(userId, userName, function(user) {
-        chat.resumeSession();
-    });
+    // var firebaseRef = firebase.database().ref("firechat");
+    // var chat = new Firechat(firebaseRef);
+    //     chat.setUser(userId, userName, function(user) {
+    //     chat.resumeSession();
+    // });
 
-    (function() {
-    'use strict';
-        var snackbarContainer = document.querySelector('#demo-snackbar-example');
-        var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-        var handler = function(event) {
-        showSnackbarButton.style.backgroundColor = '';
-        };
-        showSnackbarButton.addEventListener('click', function() {
-        'use strict';
-        showSnackbarButton.style.backgroundColor = '#' +
-            Math.floor(Math.random() * 0xFFFFFF).toString(16);
-        var data = {
-            message: 'User not logged in.',
-            timeout: 2000,
-        //   actionHandler: handler,
-        //   actionText: 'Undo'
-        };
-        snackbarContainer.MaterialSnackbar.showSnackbar(data);
-        });
-    }()); 
+    // (function() {
+    // 'use strict';
+    //     var snackbarContainer = document.querySelector('#demo-snackbar-example');
+    //     var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+    //     var handler = function(event) {
+    //     showSnackbarButton.style.backgroundColor = '';
+    //     };
+    //     showSnackbarButton.addEventListener('click', function() {
+    //     'use strict';
+    //     showSnackbarButton.style.backgroundColor = '#' +
+    //         Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    //     var data = {
+    //         message: 'User not logged in.',
+    //         timeout: 2000,
+    //     //   actionHandler: handler,
+    //     //   actionText: 'Undo'
+    //     };
+    //     snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    //     });
+    // }()); 
 });
 
