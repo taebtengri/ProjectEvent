@@ -314,5 +314,22 @@ $(document).ready(function () {
         });
          return false;
     });
+
+     // Sign out on button click
+    $("#username-submit").on("click", function (e) {
+        var user = firebase.auth().currentUser;
+        var name = $("#username").val();
+        if (name.trim() != "") {
+            user.updateProfile({
+                displayName: name
+            }).then(function() {
+                // Update successful.
+            }, function(error) {
+                // An error happened.
+            });
+        }
+        console.log(name);
+        console.log(user);
+    });
 });
 
