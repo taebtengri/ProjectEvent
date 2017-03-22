@@ -315,16 +315,17 @@ $(document).ready(function () {
         currentChatroom = chatId;
         if (user !== null) {
             $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
+            console.log(user);
         }
 
         }) 
         $("#chatbox").on("click", "#chatbutton", function(snapshot) {
-            var message = $("chattext").val();
+            var message = $("#chattext").val();
  
        chat.once("value", function(){     
       
         chat.child(chatId).push({
-                name: user.displayName,
+                name: firebase.auth().currentUser.email,
                 message: message
     
           });
