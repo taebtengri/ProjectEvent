@@ -24,24 +24,27 @@ $(document).ready(function () {
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
-        var currentChatKeys = Object.keys(log[currentChatroom]);
-        setChatData(log[currentChatroom], currentChatKeys);
-        console.log(log[currentChatroom]);
+        if (log != null && currentChatroom != undefined) {
+            var currentChatKeys = Object.keys(log[currentChatroom]);
+            console.log(log[currentChatroom]);
+            setChatData(log[currentChatroom], currentChatKeys);
+        }
     }
 
     // if there is an update to chat data call this to place in DOM.
     function setChatData(log, chatKeys) {
         $("#chat-card").empty();
-        if (currentChatroom != undefined) {
-            console.log("Connected to chat");
-            for (var i = 0; i < chatKeys.length; i++) {
-                let key = chatKeys[i];
-                let message = chat[key].message;
-                let name = chat[key].name;
+        console.log("Connected to chat");
+        for (var i = 0; i < chatKeys.length; i++) {
+            let key = chatKeys[i];
+            let message = log[key].message;
+            let name = log[key].user;
 
-                 $("#chat-card").append("<p><span class='user-name'>" + name + "</span>: " + message + "</p>");
-            }
+            console.log(name);
+            console.log(message);
+            $("#chat-card").append("<p><span class='user-name'>" + name + "</span>: " + message + "</p>");
         }
+        
         // $("#chat-card").empty();
         // for (var i = 0; i < chatKeys.length; i++) {
         //     let key = chatKeys[i];
@@ -137,9 +140,7 @@ $(document).ready(function () {
                     "type": "Point",
                     "coordinates": coordinates
                 }
-           }; 
-
-           console.log(newFeature.properties.photo);
+           };
             
            // Call to foursquare using location ID to get photo of location 
             // $.ajax({
