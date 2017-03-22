@@ -96,18 +96,24 @@ $(document).ready(function () {
         }).done(function (response) {
             var locations = response.response.venues;
             // pass response venue data to get locations
-            getLocations(locations);
+            getLocations(locations, category);
         }); 
     }
 
     // Loop through locations  
-    function getLocations(locations) {
+    function getLocations(locations, category) {
+        console.log(category);
         localEvents = [];
         for (var i = 0; i < locations.length; i++) {
            var location = locations[i];
            var coordinates = [locations[i].location.lng, locations[i].location.lat];
            var locationId = locations[i].id;
-           var locationPhoto = "";
+           var markerImages = {
+                "Coffee": "https://images.unsplash.com/photo-1413745094207-a01b234cc32f?dpr=1&auto=compress,format&fit=crop&w=991&h=557&q=80&cs=tinysrgb&crop=",
+                "Food": "https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?dpr=1&auto=compress,format&fit=crop&w=376&h=564&q=80&cs=tinysrgb&crop=",
+                "Bar": "https://images.unsplash.com/photo-1474314005122-3c07c4df1224?dpr=1&auto=compress,format&fit=crop&w=376&h=251&q=80&cs=tinysrgb&crop=",
+                "music": "https://images.unsplash.com/photo-1468164016595-6108e4c60c8b?dpr=1&auto=compress,format&fit=crop&w=1199&h=799&q=80&cs=tinysrgb&crop="
+            }
 
            var newFeature = {
                 "type": "Feature",
@@ -120,7 +126,7 @@ $(document).ready(function () {
                     "distance": locations[i].location.distance,
                     "website": locations[i].url,
                     "address": locations[i].location.address,
-                    "photo": locationPhoto,
+                    "photo": markerImages[category],
                     "icon": "theatre",
                     "iconSize": [40, 40]
                 },
@@ -129,23 +135,25 @@ $(document).ready(function () {
                     "coordinates": coordinates
                 }
            }; 
+
+           console.log(newFeature.properties.photo);
             
            // Call to foursquare using location ID to get photo of location 
-            $.ajax({
-                url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
-                method: "GET"
-            }).done(function (response) {
-                // Log the queryURL
-                console.log(response);
-                // Log the resulting object
-                // console.log("API RESPONSE:");
-                if (response.response.photos.items[0] != undefined) {
-                    locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
-                    console.log(locationPhoto);
-                }
-            });  
+            // $.ajax({
+            //     url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
+            //     method: "GET"
+            // }).done(function (response) {
+            //     // Log the queryURL
+            //     console.log(response);
+            //     // Log the resulting object
+            //     // console.log("API RESPONSE:");
+            //     if (response.response.photos.items[0] != undefined) {
+            //         locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
+            //         console.log(locationPhoto);
+            //     }
+            // });  
 
-           
+           console.log(newFeature.properties.photo);
            localEvents.push(newFeature);
        }
     }
@@ -228,7 +236,7 @@ $(document).ready(function () {
             var el = document.createElement('div');
             el.className = 'marker ' + category;
             el.setId = marker.properties.id;
-            el.style.backgroundImage = 'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
+            el.style.backgroundImage = 'url(' + marker.properties.photo;
             el.style.width = marker.properties.iconSize[0] + 'px';
             el.style.height = marker.properties.iconSize[1] + 'px';
 
