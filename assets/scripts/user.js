@@ -13,7 +13,7 @@ $(document).ready(function () {
         chat = database.ref("chat");
 
     var user;
-    var name, email, photoUrl, uid, emailVerified;
+    var name, email, photoUrl, uid, emailVerified, password;
     var txtUsername = $("#username");
     var txtEmail = $("#email");
     var txtPassword = $("#password");
@@ -25,8 +25,8 @@ $(document).ready(function () {
     $("#signin").on("click", function (e) {
         // Get email and pass
         console.log(e);
-        var email = txtEmail.val();
-        var password = txtPassword.val();
+        email = txtEmail.val();
+        password = txtPassword.val();
         var auth = firebase.auth();
         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
             // Handle Errors here.

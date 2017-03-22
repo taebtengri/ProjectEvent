@@ -1,3 +1,4 @@
+console.log('Ben wuz here');
 $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
@@ -7,7 +8,7 @@ $(document).ready(function () {
         messagingSenderId: "484471510094"
     };
     firebase.initializeApp(config);
-
+    var currentChatroom;
     var database = firebase.database();
     var chat = database.ref("chat");
 
@@ -20,8 +21,8 @@ $(document).ready(function () {
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
-        // var chatKeys = Object.keys(log);
-        // setChatData(log, chatKeys);
+        var chatKeys = Object.keys(log);
+        //setChatData(log, chatKeys);
     }
 
     // if there is an update to chat data call this to place in DOM.
@@ -297,11 +298,49 @@ $(document).ready(function () {
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
     });
-
+    var chatlist = [];
+    var user;
     $("#map").on("click", ".chat", function () {
         var chatId = $(this).attr("id");
         console.log(chatId);
+       user = firebase.auth().currentUser;
+       
+        chat.once("value", function(snapshot){
+                if (snapshot.hasChild(chatId) == false) {
+            chat.child(chatId).push({
+            chatId: chatId,
+            dateAdded : firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+        currentChatroom = chatId;
+        if (user !== null) {
+            $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
+            console.log(user);
+        }
+
+        }) 
+        $("#chatbox").on("click", "#chatbutton", function(snapshot) {
+            var message = $("#chattext").val();
+ 
+       chat.once("value", function(){     
+      
+        chat.child(chatId).push({
+                name: firebase.auth().currentUser.email,
+                message: message
+    
+          });
+      
+       });
+      console.log(user.displayName);
+      console.log(message) ;
+
+    });  
+        
     });
+    
+
+
+    
 
     // Sign out on button click
     $("#signout").on("click", function (e) {
