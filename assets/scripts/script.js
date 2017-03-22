@@ -1,4 +1,3 @@
-console.log('Ben wuz here');
 $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
@@ -9,8 +8,10 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
     var currentChatroom;
+    var user;
     var database = firebase.database();
     var chat = database.ref("chat");
+    var chatlist = [];
 
     const txtEmail = $("#email");
     const txtPassword = $("#password");
@@ -18,15 +19,29 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
+    chat.on("value", getChatData, errChatData);
+
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
-        var chatKeys = Object.keys(log);
-        //setChatData(log, chatKeys);
+        var currentChatKeys = Object.keys(log[currentChatroom]);
+        setChatData(log[currentChatroom], currentChatKeys);
+        console.log(log[currentChatroom]);
     }
 
     // if there is an update to chat data call this to place in DOM.
-    function setChatData(chat, chatKeys) {
+    function setChatData(log, chatKeys) {
+        $("#chat-card").empty();
+        if (currentChatroom != undefined) {
+            console.log("Connected to chat");
+            for (var i = 0; i < chatKeys.length; i++) {
+                let key = chatKeys[i];
+                let message = chat[key].message;
+                let name = chat[key].name;
+
+                 $("#chat-card").append("<p><span class='user-name'>" + name + "</span>: " + message + "</p>");
+            }
+        }
         // $("#chat-card").empty();
         // for (var i = 0; i < chatKeys.length; i++) {
         //     let key = chatKeys[i];
@@ -41,16 +56,6 @@ $(document).ready(function () {
         //         $("#chat-card").append("<p><span class='player" + playerNumber + "-chat'>" + name + "</span>: " + message + "</p>");
         //     }
         // }
-    }
-
-      // if user data changes call this
-    function getUserData(data) {
-        console.log("User Data Update");
-    }
-
-     // log if error received from chat data value.
-    function errUserData(err) {
-        console.log(err);
     }
 
     // log if error received from chat data value.
@@ -81,8 +86,6 @@ $(document).ready(function () {
 
         return yyyy + "" + mm + "" + dd;
     }
-    
-    console.log(getDate());
 
     
     function getLocalData(category) {
@@ -152,8 +155,6 @@ $(document).ready(function () {
             //         console.log(locationPhoto);
             //     }
             // });  
-
-           console.log(newFeature.properties.photo);
            localEvents.push(newFeature);
        }
     }
@@ -168,7 +169,7 @@ $(document).ready(function () {
         zoom: 17, // starting zoom
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
-        minZoom: 15,
+        minZoom: 13,
         maxZoom: 17,
         className: 'mapbox-marker animate'
     });
@@ -306,49 +307,33 @@ $(document).ready(function () {
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
     });
-    var chatlist = [];
-    var user;
+
     $("#map").on("click", ".chat", function () {
+        $(".mapboxgl-popup-content").remove();
+        $(".mapboxgl-popup-tip").remove();
         var chatId = $(this).attr("id");
-        console.log(chatId);
-       user = firebase.auth().currentUser;
-       
-        chat.once("value", function(snapshot){
-                if (snapshot.hasChild(chatId) == false) {
-            chat.child(chatId).push({
-            chatId: chatId,
-            dateAdded : firebase.database.ServerValue.TIMESTAMP
-          });
-        }
+        user = firebase.auth().currentUser;
         currentChatroom = chatId;
-        if (user !== null) {
-            $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
-            console.log(user);
-        }
-
-        }) 
-        $("#chatbox").on("click", "#chatbutton", function(snapshot) {
-            var message = $("#chattext").val();
- 
-       chat.once("value", function(){     
-      
-        chat.child(chatId).push({
-                name: firebase.auth().currentUser.email,
-                message: message
-    
-          });
-      
-       });
-      console.log(user.displayName);
-      console.log(message) ;
-
-    });  
-        
+        console.log(currentChatroom);
+        // console.log(user);
+        // chat.child(currentChatroom).push({
+        //     name: "My Name",
+        //     message: "Howdy"
+        // });
+        // if (user !== null) {
+        //     $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
+        //     console.log(user);
+        // }
+        chat.once("value", getChatData); 
     });
-    
 
-
-    
+    $("#chatbox").on("click", "#chatbutton", function() {
+        var message = $("#chattext").val();
+        chat.child(currentChatroom).push({
+            message: message,
+            user: "Cody"
+        });
+    });
 
     // Sign out on button click
     $("#signout").on("click", function (e) {
@@ -364,7 +349,8 @@ $(document).ready(function () {
 
      // Sign out on button click
     $("#username-submit").on("click", function (e) {
-        var user = firebase.auth().currentUser;
+        e.preventDefault();
+        user = firebase.auth().currentUser;
         var name = $("#username").val();
         if (name.trim() != "") {
             user.updateProfile({

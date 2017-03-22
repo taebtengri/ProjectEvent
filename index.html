@@ -65,30 +65,22 @@
 
         <main class="mdl-layout__content">
         <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--8-col">8</div>
-                <div id='map'>
+            <div class="mdl-cell mdl-cell--8-col">
+                <div id='map'></div>
             </div>
-                <div id="chatbox" class="mdl-cell mdl-cell--4-col">
-                    <h4>Chat</h4><hr>
-                      <hr id="bottom-hr">
-                      <div id="chatInput" class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="username" required>
-                            <label class="mdl-textfield__label" for="username">Username</label>
-                      </div>
-                      <a class="mdl-button mdl-js-button mdl-button--raised signin-buttons" id="submit">Submit</a>
-                </div>
+            <div id="chatbox" class="mdl-cell mdl-cell--4-col">
+                <h4>Chat</h4><hr>
+                    <div id="chatcard">
+                    </div>
+                    <!--<hr id="bottom-hr">-->
+                    <div id="chatInput" class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="chattext" required>
+                        <label class="mdl-textfield__label" for="chattext">Message</label>
+                    </div>
+                    <a class="mdl-button mdl-js-button mdl-button--raised signin-buttons" id="chatbutton">Submit</a>
+            </div>
         </div>
         </main>
-       <!--  <footer class="mdl-mini-footer">
-           <div class="mdl-grid">
-                <div class="mdl-cell mdl-cell--8-col-phone">
-                    Chat
-                </div>
-                <div class="mdl-cell mdl-cell--4-col-phone">
-                    Input
-                </div>
-           </div>
-      </footer> -->
     </div>
 </body>
 </html>
