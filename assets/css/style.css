@@ -9,7 +9,23 @@ right: 0;
 width: 19.5%;
 height: 100%;
 transition: all 1s ease;
+/*display: flex;
+*/justify-content: flex-end;
+}
 
+h4 {
+  text-align: center;
+}
+#bottom-hr{
+  position: absolute;
+/*  bottom: 0;
+*/  padding-bottom: 110px;
+}
+#chatInput {
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 100px;
+  padding-left: 20px;
 }
 /* Always set the map height explicitly to define the size of the div
  * element that contains the map. */
