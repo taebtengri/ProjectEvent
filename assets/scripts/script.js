@@ -8,16 +8,29 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
     var currentChatroom;
-    var user;
+    var user = firebase.auth().currentUser;
     var database = firebase.database();
     var chat = database.ref("chat");
     var chatlist = [];
+    var currentUser;
 
     const txtEmail = $("#email");
     const txtPassword = $("#password");
     const loginBtn = $("#signin");
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
+
+    firebase.auth().onAuthStateChanged(function(user) {
+        // Add display name to user profile. Probably should move this somewhere else
+        user = firebase.auth().currentUser;
+        if (user) {
+            console.log("CURRENT USER");
+            currentUser = user;
+            console.log(currentUser);
+        } else {
+            console.log("not logged in");
+        }
+    });
 
     chat.on("value", getChatData, errChatData);
 
@@ -196,8 +209,6 @@ $(document).ready(function () {
             $(el).css("height", "20px");
         });
 
-        console.log("USER MARKER");
-
         // create the popup
         var userPopup = new mapboxgl.Popup({offset: 25})
             .setText("You Are Here");
@@ -230,8 +241,6 @@ $(document).ready(function () {
             eventsObject.data.features.push(currentEvents[i]);
         }
 
-        console.log(localEvents);
-
         // add markers to map
         eventsObject.data.features.forEach(function(marker) {
             // create a DOM element for the marker
@@ -245,8 +254,8 @@ $(document).ready(function () {
             el.addEventListener('hover', function() {
                 window.alert(marker.properties.name);
             });
-            console.log("IMAGE PROPERTY:");
-            console.log("Image: " + marker.properties.photo);
+            // console.log("IMAGE PROPERTY:");
+            // console.log("Image: " + marker.properties.photo);
             // create the popup
             var popup = new mapboxgl.Popup({offset: 25})
                 .setHTML('<p>' + marker.properties.name + '</p><button class="mdl-button mdl-js-button mdl-button--raised chat" id="' + el.setId + '">Chat</button>');
@@ -257,7 +266,7 @@ $(document).ready(function () {
                 .setPopup(popup)
                 .addTo(map);
             
-            console.log(marker.geometry.coordinates);
+            // console.log(marker.geometry.coordinates);
         });
     }
 
@@ -285,7 +294,7 @@ $(document).ready(function () {
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
         }
-        console.log("Current position to set center:" + currentPosition);
+        // console.log("Current position to set center:" + currentPosition);
         buildCategoryMarkers();
     });
 
@@ -294,7 +303,7 @@ $(document).ready(function () {
         event.preventDefault();
         $(".marker").remove();
         var category = $(this).attr("data-attribute");
-        console.log(category);
+        // console.log(category);
         getLocalData(category);
         buildCategoryMarkers();
     });
@@ -313,7 +322,6 @@ $(document).ready(function () {
         $(".mapboxgl-popup-content").remove();
         $(".mapboxgl-popup-tip").remove();
         var chatId = $(this).attr("id");
-        user = firebase.auth().currentUser;
         currentChatroom = chatId;
         console.log(currentChatroom);
         // console.log(user);
@@ -331,10 +339,12 @@ $(document).ready(function () {
     $("#chatbox").on("click", "#chatbutton", function() {
         var message = $("#chattext").val();
         $("#chattext").val('');
-        chat.child(currentChatroom).push({
-            message: message,
-            user: "Cody"
-        });
+        if (currentUser.displayName != null) {
+            chat.child(currentChatroom).push({
+                message: message,
+                user: currentUser.displayName
+            });
+        }
     });
 
     // Sign out on button click
@@ -352,10 +362,9 @@ $(document).ready(function () {
      // Sign out on button click
     $("#username-submit").on("click", function (e) {
         e.preventDefault();
-        user = firebase.auth().currentUser;
         var name = $("#username").val();
         if (name.trim() != "") {
-            user.updateProfile({
+            currentUser.updateProfile({
                 displayName: name
             }).then(function() {
                 // Update successful.
@@ -364,7 +373,8 @@ $(document).ready(function () {
             });
         }
         console.log(name);
-        console.log(user);
+        console.log(currentUser);
+        return false;
     });
 });
 

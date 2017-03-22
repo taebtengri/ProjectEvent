@@ -12,7 +12,7 @@ $(document).ready(function () {
         users = database.ref("users"),
         chat = database.ref("chat");
 
-    var user;
+    var user = firebase.auth().currentUser;;
     var name, email, photoUrl, uid, emailVerified, password;
     var txtUsername = $("#username");
     var txtEmail = $("#email");
@@ -56,10 +56,10 @@ $(document).ready(function () {
 
     // Add a realtime listener for user state
     firebase.auth().onAuthStateChanged(function(user) {
-        user = firebase.auth().currentUser;
         // Add display name to user profile. Probably should move this somewhere else
         if (user) {
             window.location = 'index.html';
+            console.log("CURRENT USER");
             console.log(user);
         } else {
             console.log("not logged in");
