@@ -330,6 +330,7 @@ $(document).ready(function () {
 
     $("#chatbox").on("click", "#chatbutton", function() {
         var message = $("#chattext").val();
+        $("#chattext").val('');
         chat.child(currentChatroom).push({
             message: message,
             user: "Cody"
