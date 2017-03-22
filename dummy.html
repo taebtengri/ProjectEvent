@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Dummy</title>
+   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.33.1/mapbox-gl.js'></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.33.1/mapbox-gl.css' rel='stylesheet' />
+
+</head>
+
+<body>
+            <a class='twitter-timeline'  href=https://twitter.com/search&q= + events[i].name data-widget-id='843117325662519296'>Tweets </a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>
+
+
+          
+
+
+  <div class="city"></div>
+  <div class="wind"></div>
+  <div class="humidity"></div>
+  <div class="temp"></div>
+  <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript">
+    
+    var APIKeyFoursquare = "client_id=SUS4V4KN3LDW2BEU5G4TJIRA2R3VK5GG4TA3A15VOOSYEMAE&client_secret=5NOZCH3QOPXR3VNYHJJH4SOMJRHVIIQV5BHWOLXX3WDHAY4J";
+	var APIgoogle = "AIzaSyACLTeBU3hH7xf41S5lseZL8rG1UwfEIeI";
+    var date = prompt("YYYYMMDD");
+
+	var googleUrl = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + APIgoogle;
+
+    // Here we are building the URL we need to query the database
+   
+    $.ajax({
+        url: googleUrl,
+        method: "POST"
+      })
+     
+      .done(function(response) {
+	console.log(response);
+	 var longitude = response.location.lng;
+	 longitude = longitude.toString();
+	 longitude = longitude.slice(0, 5);
+    console.log(longitude);
+    var latitude = response.location.lat;
+    latitude = latitude.toString();
+    latitude = latitude.slice(0, 5);
+    console.log(latitude);
+
+    var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + date + "&ll=" + latitude + "%2C%20" + longitude + "&query=music&intent=checkin&radius=5000&limit=10&" + APIKeyFoursquare;
+      console.log(queryUR);
+    var queryPhotos = "http://www.panoramio.com/map/get_panoramas.php?set=public&from=0&to=1&minx=" + response.location.lng + "&miny=" + response.location.lat + "&maxx="+ (response.location.lng + 0.02) + "&maxy=" + (response.location.lat + 0.02) + "&size=medium&mapfilter=true";
+      $.ajax({
+        url: queryUR,
+        method: "GET"
+      })
+     
+      .done(function(response) {
+
+        // Log the queryURL
+        console.log(queryUR);
+
+        // Log the resulting object
+        console.log(response);
+
+        
+      }); 
+
+      $.ajax({
+        url: queryPhotos,
+        method: "GET"
+      })
+     
+      .done(function(response) {
+
+        // Log the queryURL
+        console.log(queryPhotos);
+
+        // Log the resulting object
+        console.log(response);
+
+        
+      }); 
+
+
+
+        
+      });
+
+      
+      
+        
+     
+
+
+
+   
+
+    // Here we run our AJAX call to the OpenWeatherMap API
+   
+        
+    
+  </script>
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+console.log('Ben wuz here');
 $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
@@ -20,8 +21,8 @@ $(document).ready(function () {
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
-        // var chatKeys = Object.keys(log);
-        // setChatData(log, chatKeys);
+        var chatKeys = Object.keys(log);
+        //setChatData(log, chatKeys);
     }
 
     // if there is an update to chat data call this to place in DOM.
@@ -297,10 +298,23 @@ $(document).ready(function () {
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
     });
-
+    var chatlist = [];
     $("#map").on("click", ".chat", function () {
         var chatId = $(this).attr("id");
         console.log(chatId);
+       
+        chat.once("value", function(snapshot){
+                if (snapshot.hasChild(chatId) == false) {
+            chat.child(chatId).push({
+            chatId: chatId,
+            dateAdded : firebase.database.ServerValue.TIMESTAMP
+          });
+        }
+
+        })        
+        
+        
+    
     });
 
     // Sign out on button click
