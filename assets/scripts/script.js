@@ -1,3 +1,4 @@
+console.log('Ben wuz here');
 $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
