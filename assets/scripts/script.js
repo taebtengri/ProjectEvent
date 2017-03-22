@@ -8,7 +8,7 @@ $(document).ready(function () {
         messagingSenderId: "484471510094"
     };
     firebase.initializeApp(config);
-
+    var currentChatroom;
     var database = firebase.database();
     var chat = database.ref("chat");
 
@@ -299,9 +299,11 @@ $(document).ready(function () {
         $(".mdl-layout__obfuscator").trigger("click");
     });
     var chatlist = [];
+    var user;
     $("#map").on("click", ".chat", function () {
         var chatId = $(this).attr("id");
         console.log(chatId);
+       user = firebase.auth().currentUser;
        
         chat.once("value", function(snapshot){
                 if (snapshot.hasChild(chatId) == false) {
@@ -310,12 +312,34 @@ $(document).ready(function () {
             dateAdded : firebase.database.ServerValue.TIMESTAMP
           });
         }
+        currentChatroom = chatId;
+        if (user !== null) {
+            $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
+        }
 
-        })        
-        
-        
+        }) 
+        $("#chatbox").on("click", "#chatbutton", function(snapshot) {
+            var message = $("chattext").val();
+ 
+       chat.once("value", function(){     
+      
+        chat.child(chatId).push({
+                name: user.displayName,
+                message: message
     
+          });
+      
+       });
+      console.log(user.displayName);
+      console.log(message) ;
+
+    });  
+        
     });
+    
+
+
+    
 
     // Sign out on button click
     $("#signout").on("click", function (e) {
