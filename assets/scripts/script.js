@@ -324,16 +324,12 @@ $(document).ready(function () {
         var chatId = $(this).attr("id");
         currentChatroom = chatId;
         console.log(currentChatroom);
-        // console.log(user);
-        // chat.child(currentChatroom).push({
-        //     name: "My Name",
-        //     message: "Howdy"
-        // });
-        // if (user !== null) {
-        //     $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
-        //     console.log(user);
-        // }
+         $("#chatbox").addClass("active");
         chat.once("value", getChatData); 
+    });
+
+    $("#close-chat").on("click", function() {
+        $("#chatbox").removeClass("active");
     });
 
     $("#chatbox").on("click", "#chatbutton", function() {

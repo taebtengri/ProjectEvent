@@ -1,28 +1,117 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
+#map {
+  height: 100%;
+  position: absolute; 
+  top:0; 
+  left: 0;
+  bottom:0; 
+  width: 100%;
+}
+
+.demo-layout-transparent {
+  background: ghostwhite;
+  color: black;
+}
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button,
+.mdl-layout__header-row .mdl-navigation__link {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: black;
+}
+
+.mdl-grid {
+  padding-top: 0;
+}
+
+.form-container, .header, .mapboxgl-popup-content{
+  text-align: center;
+}
+
+.marker {
+    display: block;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    background-size: cover;
+}
+
+.userMarker, .marker {
+  border-radius: 50%;
+}
+
+.mapboxgl-popup-content {
+  width: 200px;
+  height: auto;
+}
+
+.form-container {
+  margin-top: 20vh;
+}
+
+.mapboxgl-popup {
+    max-width: 400px;
+    width: 200px;
+    height: 200px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.mdl-layout__drawer {
+  width: 20vw;
+  left: -20vw;
+}
+
+.mdl-layout__drawer.is-visible {
+  left: 0;
+}
 
 #chatbox {
   color: #9e9e9e ;
   background-color: #fff9c4 ;
   position: fixed;
-  top: 56px;
-  /*z-index: 100;*/
-  right: 0;
-  width: 19.5%;
+  margin: 0;
+  width: 400px;
+  right: -400px;
   height: 100%;
   transition: all 1s ease;
   /*display: flex;
   */justify-content: flex-end;
 }
 
-h4 {
-  text-align: center;
+#chatbox.active {
+  right: 0;
 }
 
-#messages {
-  margin: -3% 2% 1% -2%;
-  background: #e3f2fd;
-  width: 96%;
-  height: 52%;
+#chat-container {
+  height: 80%;
+  background: white;
+  position: relative;
+}
+
+#log {
+  height: auto;
+  min-height: 200px;
+  background-color: white;
+}
+
+.message-textfield {
+  position: absolute;
+  bottom: 0;
+  margin-left: 20px;
+}
+
+#close-chat {
+  left: 20px;
+  top: 10px;
+}
+
+h4 {
+  text-align: center;
 }
 
 #chatInput {
@@ -47,82 +136,8 @@ h4 {
   text-align: center;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#map {
-  height: 100%;
-  position:absolute; 
-  top:0; 
-  bottom:0; 
-  width:80%;
-}
-
-.demo-layout-transparent {
-  background: ghostwhite;
-  color: black;
-}
-.demo-layout-transparent .mdl-layout__header,
-.demo-layout-transparent .mdl-layout__drawer-button,
-.mdl-layout__header-row .mdl-navigation__link {
-  /* This background is dark, so we set text to white. Use 87% black instead if
-     your background is light. */
-  color: black;
-}
-
-
-.form-container, .header, .mapboxgl-popup-content{
-  text-align: center;
-}
-
-.marker {
-    display: block;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    background-size: cover;
-}
-
-.userMarker, .marker {
-  border-radius: 50%;
-}
-
-.userMarker:hover, .marker:active {
-  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	-moz-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-}
-
-.mapboxgl-popup-content {
-  width: 200px;
-  height: 200px;
-}
-
-.form-container {
-  margin-top: 20vh;
-}
-
-.mapboxgl-popup {
-    max-width: 400px;
-    width: 200px;
-    height: 200px;
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
-
-.mdl-layout__drawer {
-  width: 100vw;
-  left: -100vw;
-}
-
-.mdl-layout__drawer.is-visible {
-  left: 0;
-}
 
 @media screen and (max-width: 640px)  {
-   .mdl-navigation__link {}
  } 
 
 #username-container {
@@ -133,9 +148,9 @@ html, body {
 
   #chatbox {
     bottom: 0;
-    background-color: #fff9c4;
-    width: 100%;
-    height: 40%;
+    /*background-color: #fff9c4;*/
+    /*width: 100%;*/
+    /*height: 40%;*/
   }
 
   #chatInput {
@@ -149,9 +164,7 @@ html, body {
   }
 
   #map {
-    width:100%;
-    height: 60%;
+    /*width:100%;*/
+    /*height: 60%;*/
   }
-
-
 }
