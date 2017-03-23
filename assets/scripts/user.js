@@ -12,7 +12,7 @@ $(document).ready(function () {
         users = database.ref("users"),
         chat = database.ref("chat");
 
-    var user;
+    var user = firebase.auth().currentUser;;
     var name, email, photoUrl, uid, emailVerified, password;
     var txtUsername = $("#username");
     var txtEmail = $("#email");
@@ -49,27 +49,17 @@ $(document).ready(function () {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 // ...
-                console.log(user)
+                console.log(user);
             });
         }
     });
 
-    function setuUsername(userName) {
-        user.updateProfile({
-            displayName: userName
-        }).then(function() {
-            // Update successful.
-        }, function(error) {
-            // An error happened.
-        });
-    }
-
     // Add a realtime listener for user state
     firebase.auth().onAuthStateChanged(function(user) {
-        user = firebase.auth().currentUser;
         // Add display name to user profile. Probably should move this somewhere else
         if (user) {
             window.location = 'index.html';
+            console.log("CURRENT USER");
             console.log(user);
         } else {
             console.log("not logged in");
@@ -83,16 +73,16 @@ $(document).ready(function () {
     }
 
     // initialize chat
-    function initChat(user) {
-        // Get a Firebase Database ref
-        var chatRef = firebase.database().ref("chat");
+    // function initChat(user) {
+    //     // Get a Firebase Database ref
+    //     var chatRef = firebase.database().ref("chat");
 
-        // Create a Firechat instance
-        var chat = new FirechatUI(chatRef, document.getElementById("firechat-wrapper"));
+    //     // Create a Firechat instance
+    //     var chat = new FirechatUI(chatRef, document.getElementById("firechat-wrapper"));
 
-        // Set the Firechat user
-        chat.setUser(user.uid, user.displayName);
-    }
+    //     // Set the Firechat user
+    //     chat.setUser(user.uid, user.displayName);
+    // }
     
     // var firebaseRef = firebase.database().ref("firechat");
     // var chat = new Firechat(firebaseRef);

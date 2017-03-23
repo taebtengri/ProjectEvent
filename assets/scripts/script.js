@@ -1,4 +1,3 @@
-console.log('Ben wuz here');
 $(document).ready(function () {
     var config = {
         apiKey: "AIzaSyA3dyltamfojStja-0yxqnNqmS4QA-6S3M",
@@ -9,8 +8,11 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
     var currentChatroom;
+    var user = firebase.auth().currentUser;
     var database = firebase.database();
     var chat = database.ref("chat");
+    var chatlist = [];
+    var currentUser;
 
     const txtEmail = $("#email");
     const txtPassword = $("#password");
@@ -18,15 +20,44 @@ $(document).ready(function () {
     const signUpBtn = $("#register");
     const logoutBtn = $("#signout");
 
+    firebase.auth().onAuthStateChanged(function(user) {
+        // Add display name to user profile. Probably should move this somewhere else
+        user = firebase.auth().currentUser;
+        if (user) {
+            console.log("CURRENT USER");
+            currentUser = user;
+            console.log(currentUser);
+        } else {
+            console.log("not logged in");
+        }
+    });
+
+    chat.on("value", getChatData, errChatData);
+
     // call this if there is an update to chat data.
     function getChatData(data) {
         var log = data.val();
-        var chatKeys = Object.keys(log);
-        //setChatData(log, chatKeys);
+        if (log != null && currentChatroom != undefined) {
+            var currentChatKeys = Object.keys(log[currentChatroom]);
+            console.log(log[currentChatroom]);
+            setChatData(log[currentChatroom], currentChatKeys);
+        }
     }
 
     // if there is an update to chat data call this to place in DOM.
-    function setChatData(chat, chatKeys) {
+    function setChatData(log, chatKeys) {
+        $("#chat-card").empty();
+        console.log("Connected to chat");
+        for (var i = 0; i < chatKeys.length; i++) {
+            let key = chatKeys[i];
+            let message = log[key].message;
+            let name = log[key].user;
+
+            console.log(name);
+            console.log(message);
+            $("#chat-card").append("<p><span class='user-name'>" + name + "</span>: " + message + "</p>");
+        }
+        
         // $("#chat-card").empty();
         // for (var i = 0; i < chatKeys.length; i++) {
         //     let key = chatKeys[i];
@@ -41,16 +72,6 @@ $(document).ready(function () {
         //         $("#chat-card").append("<p><span class='player" + playerNumber + "-chat'>" + name + "</span>: " + message + "</p>");
         //     }
         // }
-    }
-
-      // if user data changes call this
-    function getUserData(data) {
-        console.log("User Data Update");
-    }
-
-     // log if error received from chat data value.
-    function errUserData(err) {
-        console.log(err);
     }
 
     // log if error received from chat data value.
@@ -81,8 +102,6 @@ $(document).ready(function () {
 
         return yyyy + "" + mm + "" + dd;
     }
-    
-    console.log(getDate());
 
     
     function getLocalData(category) {
@@ -96,18 +115,24 @@ $(document).ready(function () {
         }).done(function (response) {
             var locations = response.response.venues;
             // pass response venue data to get locations
-            getLocations(locations);
+            getLocations(locations, category);
         }); 
     }
 
     // Loop through locations  
-    function getLocations(locations) {
+    function getLocations(locations, category) {
+        console.log(category);
         localEvents = [];
         for (var i = 0; i < locations.length; i++) {
            var location = locations[i];
            var coordinates = [locations[i].location.lng, locations[i].location.lat];
            var locationId = locations[i].id;
-           var locationPhoto = "";
+           var markerImages = {
+                "Coffee": "https://images.unsplash.com/photo-1413745094207-a01b234cc32f?dpr=1&auto=compress,format&fit=crop&w=991&h=557&q=80&cs=tinysrgb&crop=",
+                "Food": "https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?dpr=1&auto=compress,format&fit=crop&w=376&h=564&q=80&cs=tinysrgb&crop=",
+                "Bar": "https://images.unsplash.com/photo-1474314005122-3c07c4df1224?dpr=1&auto=compress,format&fit=crop&w=376&h=251&q=80&cs=tinysrgb&crop=",
+                "music": "https://images.unsplash.com/photo-1468164016595-6108e4c60c8b?dpr=1&auto=compress,format&fit=crop&w=1199&h=799&q=80&cs=tinysrgb&crop="
+            }
 
            var newFeature = {
                 "type": "Feature",
@@ -120,7 +145,7 @@ $(document).ready(function () {
                     "distance": locations[i].location.distance,
                     "website": locations[i].url,
                     "address": locations[i].location.address,
-                    "photo": locationPhoto,
+                    "photo": markerImages[category],
                     "icon": "theatre",
                     "iconSize": [40, 40]
                 },
@@ -128,24 +153,22 @@ $(document).ready(function () {
                     "type": "Point",
                     "coordinates": coordinates
                 }
-           }; 
+           };
             
            // Call to foursquare using location ID to get photo of location 
-            $.ajax({
-                url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
-                method: "GET"
-            }).done(function (response) {
-                // Log the queryURL
-                console.log(response);
-                // Log the resulting object
-                // console.log("API RESPONSE:");
-                if (response.response.photos.items[0] != undefined) {
-                    locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
-                    console.log(locationPhoto);
-                }
-            });  
-
-           
+            // $.ajax({
+            //     url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
+            //     method: "GET"
+            // }).done(function (response) {
+            //     // Log the queryURL
+            //     console.log(response);
+            //     // Log the resulting object
+            //     // console.log("API RESPONSE:");
+            //     if (response.response.photos.items[0] != undefined) {
+            //         locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
+            //         console.log(locationPhoto);
+            //     }
+            // });  
            localEvents.push(newFeature);
        }
     }
@@ -160,7 +183,7 @@ $(document).ready(function () {
         zoom: 17, // starting zoom
         pitch: 45, // pitch in degrees
         bearing: -60, // bearing in degrees
-        minZoom: 15,
+        minZoom: 13,
         maxZoom: 17,
         className: 'mapbox-marker animate'
     });
@@ -185,8 +208,6 @@ $(document).ready(function () {
             $(el).css("width", "20px");
             $(el).css("height", "20px");
         });
-
-        console.log("USER MARKER");
 
         // create the popup
         var userPopup = new mapboxgl.Popup({offset: 25})
@@ -220,23 +241,21 @@ $(document).ready(function () {
             eventsObject.data.features.push(currentEvents[i]);
         }
 
-        console.log(localEvents);
-
         // add markers to map
         eventsObject.data.features.forEach(function(marker) {
             // create a DOM element for the marker
             var el = document.createElement('div');
             el.className = 'marker ' + category;
             el.setId = marker.properties.id;
-            el.style.backgroundImage = 'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
+            el.style.backgroundImage = 'url(' + marker.properties.photo;
             el.style.width = marker.properties.iconSize[0] + 'px';
             el.style.height = marker.properties.iconSize[1] + 'px';
 
             el.addEventListener('hover', function() {
                 window.alert(marker.properties.name);
             });
-            console.log("IMAGE PROPERTY:");
-            console.log("Image: " + marker.properties.photo);
+            // console.log("IMAGE PROPERTY:");
+            // console.log("Image: " + marker.properties.photo);
             // create the popup
             var popup = new mapboxgl.Popup({offset: 25})
                 .setHTML('<p>' + marker.properties.name + '</p><button class="mdl-button mdl-js-button mdl-button--raised chat" id="' + el.setId + '">Chat</button>');
@@ -247,7 +266,7 @@ $(document).ready(function () {
                 .setPopup(popup)
                 .addTo(map);
             
-            console.log(marker.geometry.coordinates);
+            // console.log(marker.geometry.coordinates);
         });
     }
 
@@ -275,7 +294,7 @@ $(document).ready(function () {
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
         }
-        console.log("Current position to set center:" + currentPosition);
+        // console.log("Current position to set center:" + currentPosition);
         buildCategoryMarkers();
     });
 
@@ -284,7 +303,7 @@ $(document).ready(function () {
         event.preventDefault();
         $(".marker").remove();
         var category = $(this).attr("data-attribute");
-        console.log(category);
+        // console.log(category);
         getLocalData(category);
         buildCategoryMarkers();
     });
@@ -298,49 +317,35 @@ $(document).ready(function () {
     $("#close-drawer").on("click", function() {
         $(".mdl-layout__obfuscator").trigger("click");
     });
-    var chatlist = [];
-    var user;
+
     $("#map").on("click", ".chat", function () {
+        $(".mapboxgl-popup-content").remove();
+        $(".mapboxgl-popup-tip").remove();
         var chatId = $(this).attr("id");
-        console.log(chatId);
-       user = firebase.auth().currentUser;
-       
-        chat.once("value", function(snapshot){
-                if (snapshot.hasChild(chatId) == false) {
-            chat.child(chatId).push({
-            chatId: chatId,
-            dateAdded : firebase.database.ServerValue.TIMESTAMP
-          });
-        }
         currentChatroom = chatId;
-        if (user !== null) {
-            $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
-            console.log(user);
-        }
-
-        }) 
-        $("#chatbox").on("click", "#chatbutton", function(snapshot) {
-            var message = $("#chattext").val();
- 
-       chat.once("value", function(){     
-      
-        chat.child(chatId).push({
-                name: firebase.auth().currentUser.email,
-                message: message
-    
-          });
-      
-       });
-      console.log(user.displayName);
-      console.log(message) ;
-
-    });  
-        
+        console.log(currentChatroom);
+        // console.log(user);
+        // chat.child(currentChatroom).push({
+        //     name: "My Name",
+        //     message: "Howdy"
+        // });
+        // if (user !== null) {
+        //     $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
+        //     console.log(user);
+        // }
+        chat.once("value", getChatData); 
     });
-    
 
-
-    
+    $("#chatbox").on("click", "#chatbutton", function() {
+        var message = $("#chattext").val();
+        $("#chattext").val('');
+        if (currentUser.displayName != null) {
+            chat.child(currentChatroom).push({
+                message: message,
+                user: currentUser.displayName
+            });
+        }
+    });
 
     // Sign out on button click
     $("#signout").on("click", function (e) {
@@ -356,10 +361,10 @@ $(document).ready(function () {
 
      // Sign out on button click
     $("#username-submit").on("click", function (e) {
-        var user = firebase.auth().currentUser;
+        e.preventDefault();
         var name = $("#username").val();
         if (name.trim() != "") {
-            user.updateProfile({
+            currentUser.updateProfile({
                 displayName: name
             }).then(function() {
                 // Update successful.
@@ -368,7 +373,8 @@ $(document).ready(function () {
             });
         }
         console.log(name);
-        console.log(user);
+        console.log(currentUser);
+        return false;
     });
 });
 
