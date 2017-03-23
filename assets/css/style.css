@@ -62,8 +62,8 @@ html, body {
 }
 
 .mdl-layout__drawer {
-  width: 20vw;
-  left: -20vw;
+  width: 250px;
+  left: -250px;
 }
 
 .mdl-layout__drawer.is-visible {
@@ -78,6 +78,7 @@ html, body {
   width: 400px;
   right: -400px;
   height: 100%;
+  overflow: auto;
   transition: all 1s ease;
   /*display: flex;
   */justify-content: flex-end;
@@ -88,7 +89,7 @@ html, body {
 }
 
 #chat-container {
-  height: 80%;
+  height: 65%;
   background: white;
   position: relative;
 }
@@ -99,10 +100,14 @@ html, body {
   background-color: white;
 }
 
-.message-textfield {
+#comment-container {
   position: absolute;
   bottom: 0;
   margin-left: 20px;
+}
+
+#message-submit {
+  right: 0;
 }
 
 #close-chat {

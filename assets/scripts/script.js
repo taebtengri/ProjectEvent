@@ -39,6 +39,7 @@ $(document).ready(function () {
         var log = data.val();
         if (log != null && currentChatroom != undefined) {
             var currentChatKeys = Object.keys(log[currentChatroom]);
+            console.log("KEYS");
             console.log(log[currentChatroom]);
             setChatData(log[currentChatroom], currentChatKeys);
         }
@@ -332,9 +333,9 @@ $(document).ready(function () {
         $("#chatbox").removeClass("active");
     });
 
-    $("#chatbox").on("click", "#chatbutton", function() {
-        var message = $("#chattext").val();
-        $("#chattext").val('');
+    $("#chatbox").on("click", "#message-submit", function() {
+        var message = $("#message").val();
+        $("#message").val('');
         if (currentUser.displayName != null) {
             chat.child(currentChatroom).push({
                 message: message,
