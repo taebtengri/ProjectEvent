@@ -275,12 +275,13 @@ $(document).ready(function () {
     // Load map
     map.on('load', function () {
         // Add a layer showing the places.
-        
-        // Update location every 2 seconds
-        window.setInterval(function() {
-            getLocation();
+        getLocation();
             console.log("test");
-        }, 2000);
+        // Update location every 2 seconds
+        // window.setInterval(function() {
+        //     getLocation();
+        //     console.log("test");
+        // }, 2000);
 
         // Try HTML5 geolocation.
         function getLocation() {
