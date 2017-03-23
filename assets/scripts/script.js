@@ -39,6 +39,7 @@ $(document).ready(function () {
         var log = data.val();
         if (log != null && currentChatroom != undefined) {
             var currentChatKeys = Object.keys(log[currentChatroom]);
+            console.log("KEYS");
             console.log(log[currentChatroom]);
             setChatData(log[currentChatroom], currentChatKeys);
         }
@@ -324,21 +325,17 @@ $(document).ready(function () {
         var chatId = $(this).attr("id");
         currentChatroom = chatId;
         console.log(currentChatroom);
-        // console.log(user);
-        // chat.child(currentChatroom).push({
-        //     name: "My Name",
-        //     message: "Howdy"
-        // });
-        // if (user !== null) {
-        //     $("#chatbox").html('<input id="chattext"></input><button id="chatbutton">send</button>');
-        //     console.log(user);
-        // }
+         $("#chatbox").addClass("active");
         chat.once("value", getChatData); 
     });
 
-    $("#chatbox").on("click", "#chatbutton", function() {
-        var message = $("#chattext").val();
-        $("#chattext").val('');
+    $("#close-chat").on("click", function() {
+        $("#chatbox").removeClass("active");
+    });
+
+    $("#chatbox").on("click", "#message-submit", function() {
+        var message = $("#message").val();
+        $("#message").val('');
         if (currentUser.displayName != null) {
             chat.child(currentChatroom).push({
                 message: message,
