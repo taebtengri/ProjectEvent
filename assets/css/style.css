@@ -1,17 +1,18 @@
 
 
-
-#chatbox  {color: #9e9e9e ;
-background-color: #fff9c4 ;
-position: fixed;
-top: 56px;
-/*z-index: 100;*/
-right: 0;
-width: 20%;
-height: 100%;
-transition: all 1s ease;
-/*display: flex;
-*/justify-content: flex-end;
+#chatbox {
+  color: #9e9e9e ;
+  background-color: #fff9c4 ;
+  position: fixed;
+  top: 56px;
+  /*z-index: 100;*/
+  right: 0;
+  width: 19.5%;
+  height: 100%;
+  transition: all 1s ease;
+  /*display: flex;
+  */justify-content: flex-end;
+}
 
 h4 {
   text-align: center;
@@ -41,22 +42,6 @@ h4 {
   margin-bottom: 33%;
   background: #90caf9;
 }
-
-
-.msg_receive {
-  padding-left: 0;
-  margin-left: 0;
-}
-
-.msg_sent {
-  padding-bottom: 20px !important;
-  margin-right: 0;
-}
-
-/* Always set the map height explicitly to define the size of the div
- * element that contains the map. */
-/*#map { position:absolute; top:0; bottom:0; width:100%; }*/
-/* Optional: Makes the sample page fill the window. */
 
 #chattext-center {
   text-align: center;
