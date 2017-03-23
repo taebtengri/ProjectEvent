@@ -106,6 +106,7 @@ $(document).ready(function () {
 
     
     function getLocalData(category) {
+        $(".marker").remove();
         var queryUR = "https://api.foursquare.com/v2/venues/search?v=" + getDate() + "&ll=" +  currentPosition[1] + "%2C%20" + currentPosition[0]+ "&query=" + category + "&intent=checkin&radius=5000&limit=50&" + APIKeyFoursquare;
         console.log(queryUR);
 
@@ -175,7 +176,7 @@ $(document).ready(function () {
     }
 
     // Get data of nearby locations 
-    getLocalData(category);
+    
     
     // Creates our map and adds it to div with ID: map
     var map = new mapboxgl.Map({
@@ -274,36 +275,48 @@ $(document).ready(function () {
     // Load map
     map.on('load', function () {
         // Add a layer showing the places.
+        
+        // Update location every 2 seconds
+        window.setInterval(function() {
+            getLocation();
+            console.log("test");
+        }, 2000);
+
         // Try HTML5 geolocation.
-        if (navigator.geolocation) {
+        function getLocation() {
+            if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };  
+                console.log(pos.lat);
+                console.log(pos.lng);
+                // set center of map to our position.            
+                currentPosition = [pos.lng, pos.lat];
+                map.setCenter(currentPosition);
+                $(".userMarker").remove();
+                setUserMarker();    
 
-            // set center of map to our position.            
-            currentPosition = [pos.lng, pos.lat];
-            map.setCenter(currentPosition);
-            $(".userMarker").remove();
-            setUserMarker();    
-
-            }, function () {
-                handleLocationError(true, infoWindow, map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
+                }, function () {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+            }
+            // console.log("Current position to set center:" + currentPosition);
+            getLocalData(category);
+            buildCategoryMarkers();
         }
-        // console.log("Current position to set center:" + currentPosition);
-        buildCategoryMarkers();
+        
     });
 
     // 
     $(".category").on("click", function(event) {
         event.preventDefault();
         $(".marker").remove();
-        var category = $(this).attr("data-attribute");
+        category = $(this).attr("data-attribute");
         // console.log(category);
         getLocalData(category);
         buildCategoryMarkers();
