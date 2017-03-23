@@ -47,7 +47,7 @@ $(document).ready(function () {
 
     // if there is an update to chat data call this to place in DOM.
     function setChatData(log, chatKeys) {
-        $("#chat-card").empty();
+        $("#log").empty();
         console.log("Connected to chat");
         for (var i = 0; i < chatKeys.length; i++) {
             let key = chatKeys[i];
@@ -56,7 +56,7 @@ $(document).ready(function () {
 
             console.log(name);
             console.log(message);
-            $("#chat-card").append("<p><span class='user-name'>" + name + "</span>: " + message + "</p>");
+            $("#log").append("<p class='messages'><span>" + name + "</span>: " + message + "</p><br>");
         }
         
         // $("#chat-card").empty();
@@ -227,6 +227,7 @@ $(document).ready(function () {
     map.scrollZoom.disable();
     map.scrollZoom.enable({ around: 'center' });
     map.dragPan.disable();
+    map.touchZoomRotate.enable();
 
     // Creates markers and popups from our JSON response and populates the map with them
     function buildCategoryMarkers() {
@@ -353,9 +354,16 @@ $(document).ready(function () {
         if (currentUser.displayName != null) {
             chat.child(currentChatroom).push({
                 message: message,
-                user: currentUser.displayName
+                user: currentUser.displayName   
             });
+
         }
+    //     var dataRef = firebase.database();
+    //   dataRef.ref().on("child_added", function(childSnapshot) {
+    //     $("#log").append('<p>' + childSnapshot.val().user + ":" + childSnapshot.val().message + "</p>")
+    //     }, function(errorObject) {
+    //   console.log("Errors handled: " + errorObject.code);
+    // });
     });
 
     // Sign out on button click

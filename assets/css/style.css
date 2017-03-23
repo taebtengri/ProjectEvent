@@ -13,6 +13,21 @@ html, body {
   width: 100%;
 }
 
+#log {
+  height: 60%;
+   display: block;
+   justify-content: flex-end;
+   overflow-y: scroll;
+}
+
+.messages {
+  display: block;
+}
+
+#comment-container {
+  z-index: 99;
+}
+
 .demo-layout-transparent {
   background: ghostwhite;
   color: black;
@@ -94,11 +109,11 @@ html, body {
   position: relative;
 }
 
-#log {
-  height: auto;
+/*#log {
+  height:2 ;
   min-height: 200px;
   background-color: white;
-}
+}*/
 
 #comment-container {
   position: absolute;
