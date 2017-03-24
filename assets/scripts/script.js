@@ -374,7 +374,7 @@ $(document).ready(function () {
         console.log("test");
          firebase.auth().signOut().then(function() {
             // Sign-out successful.
-            window.location = 'signin.html'; 
+            window.location = 'index.html'; 
         }).catch(function(error) {
             // An error happened.
         });

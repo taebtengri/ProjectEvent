@@ -58,7 +58,7 @@ $(document).ready(function () {
     firebase.auth().onAuthStateChanged(function(user) {
         // Add display name to user profile. Probably should move this somewhere else
         if (user) {
-            window.location = 'index.html';
+            window.location = 'map.html';
             console.log("CURRENT USER");
             console.log(user);
         } else {
