@@ -22,6 +22,7 @@ html, body {
 
 .messages {
   display: block;
+  margin-left: 20px;
 }
 
 #comment-container {

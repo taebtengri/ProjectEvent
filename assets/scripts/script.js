@@ -57,6 +57,8 @@ $(document).ready(function () {
             console.log(name);
             console.log(message);
             $("#log").append("<p class='messages'><span>" + name + "</span>: " + message + "</p><br>");
+            var element = document.getElementById("log");
+            element.scrollTop = element.scrollHeight;
         }
         
         // $("#chat-card").empty();
