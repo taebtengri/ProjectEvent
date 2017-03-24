@@ -337,6 +337,7 @@ $(document).ready(function () {
     });
 
     $("#map").on("click", ".chat", function () {
+        $("#log").empty();
         $(".mapboxgl-popup-content").remove();
         $(".mapboxgl-popup-tip").remove();
         var chatId = $(this).attr("id");
