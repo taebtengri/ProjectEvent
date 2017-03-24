@@ -159,6 +159,25 @@ h4 {
   text-align: center;
 }
 
+#signin {
+  margin: 20px;
+}
+
+#register {
+  margin: 20px;
+}
+
+#username-submit {
+  justify-content: center;
+  margin: 3% 0% 3% 26%;
+  background: #90caf9;
+}
+
+#signout {
+  margin: 20px;
+  background: #ef9a9a;
+}
+
 
 @media screen and (max-width: 640px)  {
  } 
@@ -186,6 +205,13 @@ h4 {
     margin-bottom: 5%;
   }
 
+/*#signin {
+  margin: 20px;
+}
+
+#register {
+  margin: 20px;
+}*/
   /*#map {
     width:100%;
     height: 60%;
