@@ -159,7 +159,7 @@ $(document).ready(function () {
                 }
            };
             
-           // Call to foursquare using location ID to get photo of location 
+        //    Call to foursquare using location ID to get photo of location 
             // $.ajax({
             //     url: "https://api.foursquare.com/v2/venues/" +  locationId + "/photos?oauth_token=HFK1JZ2HF1EGBUMAIK3Z05YYYP4XPEY1F0HGXFPCPLJ4BRIG&v=20170317",
             //     method: "GET"
@@ -171,6 +171,7 @@ $(document).ready(function () {
             //     if (response.response.photos.items[0] != undefined) {
             //         locationPhoto = response.response.photos.items[0].prefix + "200x200" + response.response.photos.items[0].suffix;
             //         console.log(locationPhoto);
+            //         localEvents.push(newFeature);
             //     }
             // });  
            localEvents.push(newFeature);
@@ -263,7 +264,7 @@ $(document).ready(function () {
             // console.log("Image: " + marker.properties.photo);
             // create the popup
             var popup = new mapboxgl.Popup({offset: 25})
-                .setHTML('<p>' + marker.properties.name + '</p><button class="mdl-button mdl-js-button mdl-button--raised chat" id="' + el.setId + '">Chat</button>');
+                .setHTML('<p>' + marker.properties.name + '</p><button class="mdl-button mdl-js-button mdl-button--raised chat" data-attribute="' + marker.properties.name + '" id="' + el.setId + '">Chat</button>');
 
             // add marker to map
             new mapboxgl.Marker(el, {offset: [-marker.properties.iconSize[0] / 2, -marker.properties.iconSize[1] / 2]})
@@ -313,7 +314,6 @@ $(document).ready(function () {
             getLocalData(category);
             buildCategoryMarkers();
         }
-        
     });
 
     // 
@@ -338,6 +338,8 @@ $(document).ready(function () {
 
     $("#map").on("click", ".chat", function () {
         $("#log").empty();
+        $("#chat-title").empty();
+        $("#chat-title").text($(this).attr("data-attribute"));
         $(".mapboxgl-popup-content").remove();
         $(".mapboxgl-popup-tip").remove();
         var chatId = $(this).attr("id");
